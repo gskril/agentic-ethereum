@@ -36,8 +36,6 @@ export function useContractEvents({
         })
       )
 
-      console.log(GAMESHOW_CONTRACT.address)
-
       const formattedLogs = decodedLogs.map((log) => {
         const { eventName, args } = log
 

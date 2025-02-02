@@ -23,8 +23,8 @@ contract GameShow is Ownable {
         uint256 playersLimit;
         uint256 startTime;
         uint256 duration;
-        string[] questions;
         uint256 playersCount;
+        string[] questions;
         mapping(address => bytes[]) responses;
     }
 

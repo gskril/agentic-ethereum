@@ -2,8 +2,7 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Users } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { useChainId } from 'wagmi'
+import React from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -18,9 +17,6 @@ export function JoinGame() {
   const soldTickets = 8
   const onEnterGame = () => console.log('Enter game clicked')
 
-  const chainId = useChainId()
-  console.log(chainId)
-
   const timeLeft = {
     hours: 0,
     minutes: 32,
@@ -31,7 +27,9 @@ export function JoinGame() {
   const soldPercentage = (soldTickets / maxTickets) * 100
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-50 p-4">
+      <ConnectButton showBalance={false} />
+
       <Card className="w-full max-w-sm bg-white shadow-lg">
         <CardHeader>
           <h1 className="text-center text-2xl font-bold text-zinc-900">
@@ -96,8 +94,6 @@ export function JoinGame() {
             >
               Enter Game
             </Button>
-
-            <ConnectButton />
           </div>
         </CardContent>
       </Card>
