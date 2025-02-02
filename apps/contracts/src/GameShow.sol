@@ -48,7 +48,8 @@ contract GameShow is Ownable {
         uint256 entryFee,
         uint256 playersLimit,
         uint256 expectedStartTime,
-        uint256 duration
+        uint256 duration,
+        uint256 questionsCount
     );
 
     event GameStarted(
@@ -80,6 +81,7 @@ contract GameShow is Ownable {
 
     // Misc errors
     error Unauthorized();
+    error CannotStartGame();
     error CannotCreateGame();
     error GameDoesNotExist();
 
@@ -150,7 +152,7 @@ contract GameShow is Ownable {
         string memory _name,
         uint256 _entryFee,
         uint256 _playersLimit,
-        uint256 _expectedStartTime, // This should be treated as an *expected* start time
+        uint256 _expectedStartTime,
         uint256 _duration,
         uint256 _questionsCount
     ) external onlyOwner {
@@ -177,7 +179,8 @@ contract GameShow is Ownable {
             _entryFee,
             _playersLimit,
             _expectedStartTime,
-            _duration
+            _duration,
+            _questionsCount
         );
     }
 
@@ -188,6 +191,13 @@ contract GameShow is Ownable {
         Game storage game = games[_gameId];
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + game.duration;
+
+        if (
+            game.state != GameState.Pending ||
+            _questions.length != game.questions.length
+        ) {
+            revert CannotStartGame();
+        }
 
         game.state = GameState.Active;
         game.startTime = startTime;
