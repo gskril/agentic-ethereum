@@ -43,47 +43,55 @@ contract GameShow is Ownable {
     //////////////////////////////////////////////////////////////*/
 
     event GameCreated(
-        uint256 gameId,
+        uint256 indexed gameId,
         string name,
         uint256 entryFee,
         uint256 playersLimit,
-        uint256 expectedStartTime,
+        uint256 indexed expectedStartTime,
         uint256 duration,
         uint256 questionsCount
     );
 
     event GameStarted(
-        uint256 gameId,
-        uint256 startTime,
-        uint256 endTime,
+        uint256 indexed gameId,
+        uint256 indexed startTime,
+        uint256 indexed endTime,
         string[] questions
     );
 
-    event GameJoined(address player, uint256 gameId);
+    event GameJoined(address indexed player, uint256 indexed gameId);
 
-    event GameEnded(uint256 gameId);
+    event ResponsesSubmitted(
+        address indexed player,
+        uint256 indexed gameId,
+        bytes[] responses
+    );
 
-    event GameSettled(uint256 gameId, address winner);
+    event GameSettled(uint256 indexed gameId, address indexed winner, uint256 prize);
 
     /*//////////////////////////////////////////////////////////////
                                  ERRORS
     //////////////////////////////////////////////////////////////*/
 
-    // Errors relating to joining the game
-    error InvalidEntryFee();
+    // Player
     error AlreadyJoined();
-    error TooLateToJoin();
-    error GameIsFull();
-
-    // Error relating to submitting responses
-    error GameHasNotStarted();
-    error GameHasEnded();
-
-    // Misc errors
-    error Unauthorized();
-    error CannotStartGame();
-    error CannotCreateGame();
     error GameDoesNotExist();
+    error GameHasEnded();
+    error GameHasNotStarted();
+    error GameIsFull();
+    error InvalidEntryFee();
+    error TooLateToJoin();
+    error Unauthorized();
+
+    // Owner
+    error CannotCreateGame();
+    error CannotStartGame();
+    error FailedToSendPrize();
+    error GameNotOver();
+    error InvalidWinner();
+
+    // Misc
+    error QuestionsLengthMismatch();
 
     /*//////////////////////////////////////////////////////////////
                                MODIFIERS
@@ -114,13 +122,11 @@ contract GameShow is Ownable {
     // 4. The sender is a player in the game (they have an initiated list of responses)
     modifier canSubmitResponses(uint256 _gameId) {
         Game storage game = games[_gameId];
-        uint256 endTime = game.startTime + game.duration;
-        uint256 responseCount = game.responses[msg.sender].length;
 
         if (game.state == GameState.Empty) revert GameDoesNotExist();
         if (game.state < GameState.Active) revert GameHasNotStarted();
-        if (block.timestamp > endTime) revert GameHasEnded();
-        if (responseCount != game.questions.length) revert Unauthorized();
+        if (block.timestamp > game.startTime + game.duration) revert GameHasEnded();
+        if (game.responses[msg.sender].length == 0) revert Unauthorized();
 
         _;
     }
@@ -142,6 +148,23 @@ contract GameShow is Ownable {
         game.responses[msg.sender] = new bytes[](game.questions.length);
 
         emit GameJoined(msg.sender, _gameId);
+    }
+
+    function submitResponses(
+        uint256 _gameId,
+        bytes[] calldata _responses
+    ) external canSubmitResponses(_gameId) {
+        Game storage game = games[_gameId];
+
+        if (_responses.length != game.questions.length) {
+            revert QuestionsLengthMismatch();
+        }
+
+        for (uint256 i = 0; i < _responses.length; i++) {
+            game.responses[msg.sender][i] = _responses[i];
+        }
+
+        emit ResponsesSubmitted(msg.sender, _gameId, _responses);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -184,26 +207,40 @@ contract GameShow is Ownable {
         );
     }
 
-    function startGame(
-        uint256 _gameId,
-        string[] calldata _questions
-    ) external onlyOwner {
+    function startGame(uint256 _gameId, string[] calldata _questions) external onlyOwner {
         Game storage game = games[_gameId];
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + game.duration;
 
-        if (
-            game.state != GameState.Pending ||
-            _questions.length != game.questions.length
-        ) {
-            revert CannotStartGame();
-        }
+        if (game.state != GameState.Pending) revert CannotStartGame();
+        if (_questions.length != game.questions.length) revert QuestionsLengthMismatch();
 
         game.state = GameState.Active;
         game.startTime = startTime;
         game.questions = _questions;
 
         emit GameStarted(_gameId, startTime, endTime, _questions);
+    }
+
+    function settleGame(uint256 _gameId, address _winner) external onlyOwner {
+        Game storage game = games[_gameId];
+
+        // Check that we're ready to settle the game
+        if (
+            game.state < GameState.Active &&
+            block.timestamp < game.startTime + game.duration
+        ) revert GameNotOver();
+
+        // Check that the selected winner actually joined the game
+        // Note: technically this doesn't check that they submitted responses
+        if (game.responses[_winner].length == 0) revert InvalidWinner();
+
+        // Settle the game and send the prize to the winner
+        game.state = GameState.Settled;
+        uint256 prize = game.entryFee * game.playersCount;
+        (bool success, ) = _winner.call{value: prize}("");
+        if (!success) revert FailedToSendPrize();
+        emit GameSettled(_gameId, _winner, prize);
     }
 
     /*//////////////////////////////////////////////////////////////
