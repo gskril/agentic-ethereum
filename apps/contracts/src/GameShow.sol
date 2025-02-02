@@ -179,6 +179,15 @@ contract GameShow is Ownable {
         uint256 _duration,
         uint256 _questionsCount
     ) external onlyOwner {
+        // Make sure there is no other game currently active
+        if (gameCount > 0) {
+            Game storage previousGame = games[gameCount - 1];
+            if (
+                previousGame.state > GameState.Empty &&
+                previousGame.state < GameState.Settled
+            ) revert CannotCreateGame();
+        }
+
         uint256 gameId = gameCount++;
         Game storage game = games[gameId];
 
