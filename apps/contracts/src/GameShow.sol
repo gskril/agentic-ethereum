@@ -224,6 +224,8 @@ contract GameShow is Ownable {
         if (game.state != GameState.Pending) revert CannotStartGame();
         if (_questions.length != game.questions.length) revert QuestionsLengthMismatch();
 
+        // TODO: Handle the case where nobody joined the game
+
         game.state = GameState.Active;
         game.startTime = startTime;
         game.questions = _questions;
@@ -239,6 +241,8 @@ contract GameShow is Ownable {
             game.state < GameState.Active &&
             block.timestamp < game.startTime + game.duration
         ) revert GameNotOver();
+
+        // TODO: Handle the case where nobody submitted responses
 
         // Check that the selected winner actually joined the game
         // Note: technically this doesn't check that they submitted responses

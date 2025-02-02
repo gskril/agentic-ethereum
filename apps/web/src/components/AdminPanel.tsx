@@ -118,7 +118,7 @@ function StartGameForm({ tx }: { tx: UseWriteContractReturnType }) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Create Game</CardTitle>
+        <CardTitle>Start Game</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleStartGame} className="flex flex-col gap-4">
