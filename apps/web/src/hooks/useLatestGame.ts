@@ -4,6 +4,8 @@ import { usePublicClient } from 'wagmi'
 
 import { chains, wagmiConfig } from '@/lib/web3'
 
+export type Game = NonNullable<ReturnType<typeof useLatestGame>['data']>
+
 export function useLatestGame() {
   const viemClient = usePublicClient({
     config: wagmiConfig,
@@ -22,8 +24,10 @@ export function useLatestGame() {
         return null
       }
 
+      const gameId = gameCount - 1n
+
       const [
-        name,
+        title,
         state,
         entryFee,
         playersLimit,
@@ -33,11 +37,12 @@ export function useLatestGame() {
       ] = await viemClient.readContract({
         ...GAMESHOW_CONTRACT,
         functionName: 'games',
-        args: [BigInt(gameCount - 1n)],
+        args: [gameId],
       })
 
       return {
-        name,
+        id: gameId,
+        title,
         state: translateState(state),
         entryFee,
         playersLimit,

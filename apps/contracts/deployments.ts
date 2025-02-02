@@ -116,7 +116,7 @@ export const GAMESHOW_CONTRACT = {
         {
           indexed: false,
           internalType: 'string',
-          name: 'name',
+          name: 'title',
           type: 'string',
         },
         {
@@ -276,7 +276,7 @@ export const GAMESHOW_CONTRACT = {
       inputs: [
         {
           internalType: 'string',
-          name: '_name',
+          name: '_title',
           type: 'string',
         },
         {
@@ -335,7 +335,7 @@ export const GAMESHOW_CONTRACT = {
       outputs: [
         {
           internalType: 'string',
-          name: 'name',
+          name: 'title',
           type: 'string',
         },
         {

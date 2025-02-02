@@ -17,7 +17,7 @@ contract GameShow is Ownable {
     }
 
     struct Game {
-        string name;
+        string title;
         GameState state;
         uint256 entryFee;
         uint256 playersLimit;
@@ -44,7 +44,7 @@ contract GameShow is Ownable {
 
     event GameCreated(
         uint256 indexed gameId,
-        string name,
+        string title,
         uint256 entryFee,
         uint256 playersLimit,
         uint256 indexed expectedStartTime,
@@ -172,7 +172,7 @@ contract GameShow is Ownable {
     //////////////////////////////////////////////////////////////*/
 
     function createGame(
-        string memory _name,
+        string memory _title,
         uint256 _entryFee,
         uint256 _playersLimit,
         uint256 _expectedStartTime,
@@ -197,7 +197,7 @@ contract GameShow is Ownable {
         }
 
         // Initialize the game
-        game.name = _name;
+        game.title = _title;
         game.state = GameState.Pending;
         game.entryFee = _entryFee;
         game.playersLimit = _playersLimit;
@@ -207,7 +207,7 @@ contract GameShow is Ownable {
 
         emit GameCreated(
             gameId,
-            _name,
+            _title,
             _entryFee,
             _playersLimit,
             _expectedStartTime,

@@ -35,7 +35,7 @@ export default function Home() {
   }
 
   if (data.state === 'open') {
-    return <JoinGame />
+    return <JoinGame game={data} />
   }
 
   return (
