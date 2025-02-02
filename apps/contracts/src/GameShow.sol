@@ -36,12 +36,15 @@ contract GameShow is Ownable {
 
     uint256 public gameCount;
 
+    /// @notice Percentage of a game's total prize pool that is taken as a fee, expressed in basis points.
+    /// @dev 1000 = 10%
+    uint256 public fee = 1000;
+
     mapping(uint256 => Game) public games;
 
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
-
     event GameCreated(
         uint256 indexed gameId,
         string title,
@@ -85,7 +88,9 @@ contract GameShow is Ownable {
 
     // Owner
     error CannotCreateGame();
+    error CannotExecuteDuringGame();
     error CannotStartGame();
+    error FailedToExecute();
     error FailedToSendPrize();
     error GameNotOver();
     error InvalidWinner();
@@ -97,12 +102,12 @@ contract GameShow is Ownable {
                                MODIFIERS
     //////////////////////////////////////////////////////////////*/
 
-    // User can join a game if all of the following are true:
-    // 1. The game exists
-    // 2. The entry fee is correct
-    // 3. The game's estimated start time is in the future
-    // 4. The game is not full
-    // 5. They have not already joined the game
+    /// @notice User can join a game if all of the following are true:
+    /// 1. The game exists
+    /// 2. The entry fee is correct
+    /// 3. The game's estimated start time is in the future
+    /// 4. The game is not full
+    /// 5. They have not already joined the game
     modifier canJoinGame(uint256 _gameId) {
         Game storage game = games[_gameId];
 
@@ -115,11 +120,11 @@ contract GameShow is Ownable {
         _;
     }
 
-    // User can submit responses if all of the following are true:
-    // 1. The game exists
-    // 2. The questions have been set (this officially starts the game)
-    // 3. The game has not ended
-    // 4. The sender is a player in the game (they have an initiated list of responses)
+    /// @notice User can submit responses if all of the following are true:
+    /// 1. The game exists
+    /// 2. The questions have been set (this officially starts the game)
+    /// 3. The game has not ended
+    /// 4. The sender is a player in the game (they have an initiated list of responses)
     modifier canSubmitResponses(uint256 _gameId) {
         Game storage game = games[_gameId];
 
@@ -141,6 +146,7 @@ contract GameShow is Ownable {
                             PUBLIC FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Join a game.
     function joinGame(uint256 _gameId) external payable canJoinGame(_gameId) {
         Game storage game = games[_gameId];
 
@@ -150,6 +156,7 @@ contract GameShow is Ownable {
         emit GameJoined(msg.sender, _gameId);
     }
 
+    /// @notice Submit responses for a game that you've already joined.
     function submitResponses(
         uint256 _gameId,
         bytes[] calldata _responses
@@ -171,6 +178,7 @@ contract GameShow is Ownable {
                             ADMIN FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Create a new game.
     function createGame(
         string memory _title,
         uint256 _entryFee,
@@ -216,6 +224,7 @@ contract GameShow is Ownable {
         );
     }
 
+    /// @notice Start a game by setting the questions.
     function startGame(uint256 _gameId, string[] calldata _questions) external onlyOwner {
         Game storage game = games[_gameId];
         uint256 startTime = block.timestamp;
@@ -224,7 +233,12 @@ contract GameShow is Ownable {
         if (game.state != GameState.Pending) revert CannotStartGame();
         if (_questions.length != game.questions.length) revert QuestionsLengthMismatch();
 
-        // TODO: Handle the case where nobody joined the game
+        // If nobody joined the game, settle early
+        if (game.playersCount == 0) {
+            game.state = GameState.Settled;
+            emit GameSettled(_gameId, address(0), 0);
+            return;
+        }
 
         game.state = GameState.Active;
         game.startTime = startTime;
@@ -233,6 +247,7 @@ contract GameShow is Ownable {
         emit GameStarted(_gameId, startTime, endTime, _questions);
     }
 
+    /// @notice Settle a game and send the prize to the winner.
     function settleGame(uint256 _gameId, address _winner) external onlyOwner {
         Game storage game = games[_gameId];
 
@@ -242,25 +257,35 @@ contract GameShow is Ownable {
             block.timestamp < game.startTime + game.duration
         ) revert GameNotOver();
 
-        // TODO: Handle the case where nobody submitted responses
-
-        // Check that the selected winner actually joined the game
+        // Check that the selected winner actually joined the game, or is the contract itself as a fallback
         // Note: technically this doesn't check that they submitted responses
-        if (game.responses[_winner].length == 0) revert InvalidWinner();
+        if (game.responses[_winner].length == 0 && _winner != address(this)) {
+            revert InvalidWinner();
+        }
 
         // Settle the game and send the prize to the winner
         game.state = GameState.Settled;
-        uint256 prize = game.entryFee * game.playersCount;
-        (bool success, ) = _winner.call{value: prize}("");
+        uint256 totalTicketValue = game.entryFee * game.playersCount;
+        uint256 operatorShare = (totalTicketValue * fee) / 10000;
+        uint256 winnerPrize = totalTicketValue - operatorShare;
+        (bool success, ) = _winner.call{value: winnerPrize}("");
         if (!success) revert FailedToSendPrize();
-        emit GameSettled(_gameId, _winner, prize);
+        emit GameSettled(_gameId, _winner, winnerPrize);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                           INTERNAL FUNCTIONS
-    //////////////////////////////////////////////////////////////*/
+    /// @notice Execute an arbitrary call. Used for withdrawing earned fees or recovering accidentally sent tokens.
+    /// @dev This cannot be called during a game to prevent the owner from stealing the prize.
+    function execute(address _to, uint256 _value, bytes memory _data) public onlyOwner {
+        // Make sure there is no other game currently active
+        if (gameCount > 0) {
+            Game storage previousGame = games[gameCount - 1];
+            if (
+                previousGame.state > GameState.Empty &&
+                previousGame.state < GameState.Settled
+            ) revert CannotExecuteDuringGame();
+        }
 
-    /*//////////////////////////////////////////////////////////////
-                           REQUIRED OVERRIDES
-    //////////////////////////////////////////////////////////////*/
+        (bool success, ) = _to.call{value: _value}(_data);
+        if (!success) revert FailedToExecute();
+    }
 }
