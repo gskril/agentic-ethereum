@@ -11,6 +11,17 @@ async function main() {
     '0x179A862703a4adfb29896552DF9e307980D19285', // _owner
   ] as const
 
+  if (hre.network.name === 'localhost') {
+    const deployment = await hre.viem.deployContract(
+      // @ts-ignore
+      contractName,
+      constructorArguments
+    )
+
+    console.log(`Deployed ${contractName} to ${deployment.address}`)
+    return
+  }
+
   const encodedArgs = encodeAbiParameters(
     [{ type: 'address' }],
     constructorArguments
@@ -25,8 +36,6 @@ async function main() {
   })
 
   console.log(`Deployed ${contractName} to ${address}`)
-
-  if (hre.network.name === 'localhost') return
 
   try {
     // Wait 30 seconds for block explorers to index the deployment

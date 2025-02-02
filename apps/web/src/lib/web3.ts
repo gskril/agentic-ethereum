@@ -14,7 +14,7 @@ const { connectors } = getDefaultWallets({
   projectId: WALLETCONNECT_ID,
 })
 
-const chains = [hardhat, base, mainnet] as const
+export const chains = [hardhat, base, mainnet] as const
 
 export const wagmiConfig = createConfig({
   chains,

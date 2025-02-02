@@ -1,5 +1,5 @@
 export const GAMESHOW_CONTRACT = {
-  address: '0x69668da5839816a059FF8B432DB8a2817cCCf8eF',
+  address: '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
   abi: [
     {
       inputs: [
