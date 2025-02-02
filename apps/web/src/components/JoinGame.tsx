@@ -139,13 +139,15 @@ const CountdownTimer = React.memo(
         setNow(Math.floor(Date.now() / 1000))
       }, 1000)
 
-      if (seconds <= 0) {
-        clearInterval(interval)
-        refetch()
-      }
-
       return () => clearInterval(interval)
     }, [])
+
+    // Refetch the game when the countdown is over
+    useEffect(() => {
+      if (seconds <= 0) {
+        refetch()
+      }
+    }, [seconds])
 
     return (
       <div className="mb-10 grid grid-cols-3 gap-2">

@@ -15,10 +15,13 @@ export function useLatestGame() {
   return useQuery({
     queryKey: ['latestGame'],
     queryFn: async () => {
-      const gameCount = await viemClient.readContract({
-        ...GAMESHOW_CONTRACT,
-        functionName: 'gameCount',
-      })
+      const [blockTimestamp, gameCount] = await Promise.all([
+        viemClient.getBlock(),
+        viemClient.readContract({
+          ...GAMESHOW_CONTRACT,
+          functionName: 'gameCount',
+        }),
+      ])
 
       if (gameCount === 0n) {
         return null
@@ -43,7 +46,12 @@ export function useLatestGame() {
       return {
         id: gameId,
         title,
-        state: translateState(state),
+        state: translateState({
+          state,
+          blockTimestamp: blockTimestamp.timestamp,
+          startTime,
+          duration,
+        }),
         entryFee,
         playersLimit,
         startTime,
@@ -54,15 +62,31 @@ export function useLatestGame() {
   })
 }
 
-function translateState(state: number) {
+function translateState({
+  state,
+  blockTimestamp,
+  startTime,
+  duration,
+}: {
+  state: number
+  blockTimestamp: bigint
+  startTime: bigint
+  duration: bigint
+}) {
   switch (state) {
     case 0:
       return 'empty'
     case 1:
-      // TODO: return "waiting-start" if users can't join anymore, but the game hasn't been started yet
+      if (blockTimestamp > startTime) {
+        return 'waiting-start'
+      }
+
       return 'open'
     case 2:
-      // TODO: return "waiting-settle" if users can't answer anymore, but the game hasn't been settled yet
+      if (blockTimestamp > startTime + duration) {
+        return 'waiting-settle'
+      }
+
       return 'active'
     default:
       return 'settled'
