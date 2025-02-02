@@ -10,7 +10,7 @@ const containerClasses =
   'flex h-screen items-center justify-center max-w-sm mx-auto'
 
 export default function Home() {
-  const { data, isLoading } = useLatestGame()
+  const { data, isLoading, refetch } = useLatestGame()
 
   if (isLoading) {
     return (
@@ -35,7 +35,7 @@ export default function Home() {
   }
 
   if (data.state === 'open') {
-    return <JoinGame game={data} />
+    return <JoinGame game={data} refetch={refetch} />
   }
 
   return (
