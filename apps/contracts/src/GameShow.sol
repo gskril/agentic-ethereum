@@ -230,6 +230,7 @@ contract GameShow is Ownable {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + game.duration;
 
+        if (startTime < game.startTime) revert CannotStartGame();
         if (game.state != GameState.Pending) revert CannotStartGame();
         if (_questions.length != game.questions.length) revert QuestionsLengthMismatch();
 
@@ -253,7 +254,7 @@ contract GameShow is Ownable {
 
         // Check that we're ready to settle the game
         if (
-            game.state < GameState.Active &&
+            game.state < GameState.Active ||
             block.timestamp < game.startTime + game.duration
         ) revert GameNotOver();
 
