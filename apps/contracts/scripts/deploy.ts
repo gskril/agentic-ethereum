@@ -1,22 +1,23 @@
+// pnpm run deploy:local
 import hre from 'hardhat'
 import { encodeAbiParameters } from 'viem/utils'
 
 import { generateSaltAndDeploy } from './lib/create2'
 
 async function main() {
-  const contractName = 'Contract'
+  const contractName = 'GameShow'
 
   const constructorArguments = [
-    'Contract', // _name
+    '0x179A862703a4adfb29896552DF9e307980D19285', // _owner
   ] as const
 
   const encodedArgs = encodeAbiParameters(
-    [{ type: 'string' }],
+    [{ type: 'address' }],
     constructorArguments
   )
 
   const { address } = await generateSaltAndDeploy({
-    vanity: '0x000',
+    vanity: '0x',
     encodedArgs,
     contractName,
     caseSensitive: false,
@@ -24,6 +25,8 @@ async function main() {
   })
 
   console.log(`Deployed ${contractName} to ${address}`)
+
+  if (hre.network.name === 'localhost') return
 
   try {
     // Wait 30 seconds for block explorers to index the deployment

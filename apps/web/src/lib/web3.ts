@@ -1,6 +1,7 @@
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
+import { GAMESHOW_CONTRACT } from 'contracts/deployments'
 import { createConfig, http } from 'wagmi'
-import { base, mainnet } from 'wagmi/chains'
+import { base, hardhat, mainnet } from 'wagmi/chains'
 
 const WALLETCONNECT_ID = process.env.NEXT_PUBLIC_WALLETCONNECT_ID
 
@@ -13,12 +14,13 @@ const { connectors } = getDefaultWallets({
   projectId: WALLETCONNECT_ID,
 })
 
-const chains = [base, mainnet] as const
+const chains = [hardhat, base, mainnet] as const
 
 export const wagmiConfig = createConfig({
   chains,
   connectors,
   transports: {
+    [hardhat.id]: http(),
     [base.id]: http(),
     [mainnet.id]: http(),
   },

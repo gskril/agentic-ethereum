@@ -1,0 +1,489 @@
+export const GAMESHOW_CONTRACT = {
+  address: '0x69668da5839816a059FF8B432DB8a2817cCCf8eF',
+  abi: [
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_owner',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'nonpayable',
+      type: 'constructor',
+    },
+    {
+      inputs: [],
+      name: 'AlreadyJoined',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'CannotCreateGame',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'CannotStartGame',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'FailedToSendPrize',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'GameDoesNotExist',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'GameHasEnded',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'GameHasNotStarted',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'GameIsFull',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'GameNotOver',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'InvalidEntryFee',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'InvalidWinner',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+      ],
+      name: 'OwnableInvalidOwner',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'OwnableUnauthorizedAccount',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'QuestionsLengthMismatch',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'TooLateToJoin',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'Unauthorized',
+      type: 'error',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'gameId',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'string',
+          name: 'name',
+          type: 'string',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'entryFee',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'playersLimit',
+          type: 'uint256',
+        },
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'expectedStartTime',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'duration',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'questionsCount',
+          type: 'uint256',
+        },
+      ],
+      name: 'GameCreated',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'player',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'gameId',
+          type: 'uint256',
+        },
+      ],
+      name: 'GameJoined',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'gameId',
+          type: 'uint256',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'winner',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'prize',
+          type: 'uint256',
+        },
+      ],
+      name: 'GameSettled',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'gameId',
+          type: 'uint256',
+        },
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'startTime',
+          type: 'uint256',
+        },
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'endTime',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'string[]',
+          name: 'questions',
+          type: 'string[]',
+        },
+      ],
+      name: 'GameStarted',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'previousOwner',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'newOwner',
+          type: 'address',
+        },
+      ],
+      name: 'OwnershipTransferred',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'player',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'gameId',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'bytes[]',
+          name: 'responses',
+          type: 'bytes[]',
+        },
+      ],
+      name: 'ResponsesSubmitted',
+      type: 'event',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'string',
+          name: '_name',
+          type: 'string',
+        },
+        {
+          internalType: 'uint256',
+          name: '_entryFee',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: '_playersLimit',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: '_expectedStartTime',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: '_duration',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: '_questionsCount',
+          type: 'uint256',
+        },
+      ],
+      name: 'createGame',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'gameCount',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'games',
+      outputs: [
+        {
+          internalType: 'string',
+          name: 'name',
+          type: 'string',
+        },
+        {
+          internalType: 'enum GameShow.GameState',
+          name: 'state',
+          type: 'uint8',
+        },
+        {
+          internalType: 'uint256',
+          name: 'entryFee',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'playersLimit',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'startTime',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'duration',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'playersCount',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '_gameId',
+          type: 'uint256',
+        },
+      ],
+      name: 'joinGame',
+      outputs: [],
+      stateMutability: 'payable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'name',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'owner',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'renounceOwnership',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '_gameId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address',
+          name: '_winner',
+          type: 'address',
+        },
+      ],
+      name: 'settleGame',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '_gameId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'string[]',
+          name: '_questions',
+          type: 'string[]',
+        },
+      ],
+      name: 'startGame',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '_gameId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'bytes[]',
+          name: '_responses',
+          type: 'bytes[]',
+        },
+      ],
+      name: 'submitResponses',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'newOwner',
+          type: 'address',
+        },
+      ],
+      name: 'transferOwnership',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ],
+} as const
