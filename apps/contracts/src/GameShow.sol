@@ -24,8 +24,9 @@ contract GameShow is Ownable {
         uint256 startTime;
         uint256 duration;
         uint256 playersCount;
+        address winner;
         string[] questions;
-        mapping(address => bytes[]) responses;
+        mapping(address => bool) hasJoined;
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -151,7 +152,7 @@ contract GameShow is Ownable {
         Game storage game = games[_gameId];
 
         game.playersCount++;
-        game.responses[msg.sender] = new bytes[](game.questions.length);
+        game.hasJoined[msg.sender] = true;
 
         emit GameJoined(msg.sender, _gameId);
     }
@@ -167,16 +168,12 @@ contract GameShow is Ownable {
             revert QuestionsLengthMismatch();
         }
 
-        for (uint256 i = 0; i < _responses.length; i++) {
-            game.responses[msg.sender][i] = _responses[i];
-        }
-
         emit ResponsesSubmitted(msg.sender, _gameId, _responses);
     }
 
     function joinedGame(uint256 _gameId, address _player) public view returns (bool) {
         Game storage game = games[_gameId];
-        return game.responses[_player].length > 0;
+        return game.hasJoined[_player];
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -265,11 +262,12 @@ contract GameShow is Ownable {
 
         // Check that the selected winner actually joined the game, or is the contract itself as a fallback
         // Note: technically this doesn't check that they submitted responses
-        if (game.responses[_winner].length == 0 && _winner != address(this)) {
+        if (!game.hasJoined[_winner] && _winner != address(this)) {
             revert InvalidWinner();
         }
 
         // Settle the game and send the prize to the winner
+        game.winner = _winner;
         game.state = GameState.Settled;
         uint256 totalTicketValue = game.entryFee * game.playersCount;
         uint256 operatorShare = (totalTicketValue * fee) / 10000;

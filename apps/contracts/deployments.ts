@@ -414,6 +414,11 @@ export const GAMESHOW_CONTRACT = {
           name: 'playersCount',
           type: 'uint256',
         },
+        {
+          internalType: 'address',
+          name: 'winner',
+          type: 'address',
+        },
       ],
       stateMutability: 'view',
       type: 'function',
