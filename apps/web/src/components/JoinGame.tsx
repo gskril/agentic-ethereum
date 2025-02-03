@@ -6,6 +6,8 @@ import { Users } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { formatEther } from 'viem'
 import {
+  useAccount,
+  useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -24,17 +26,36 @@ type Props = {
 }
 
 export function JoinGame({ game, refetch }: Props) {
+  const { address } = useAccount()
+
+  const alreadyJoined = useReadContract({
+    ...GAMESHOW_CONTRACT,
+    functionName: 'joinedGame',
+    // @ts-expect-error This only runs when the address is defined
+    args: [game.id, address],
+    enabled: !!address,
+  })
+
   const tx = useWriteContract()
   const receipt = useWaitForTransactionReceipt({ hash: tx.data })
-
   const simulation = useSimulateContract({
     ...GAMESHOW_CONTRACT,
     functionName: 'joinGame',
     args: [game.id],
     value: game.entryFee,
+    query: {
+      enabled: !alreadyJoined.data,
+    },
   })
 
-  function handleJoinGame() {
+  useEffect(() => {
+    if (receipt.data) {
+      refetch()
+      alreadyJoined.refetch()
+    }
+  }, [receipt.data])
+
+  async function handleJoinGame() {
     if (!simulation.data) return alert('Unreachable code')
     tx.writeContract(simulation.data.request)
   }
@@ -106,13 +127,13 @@ export function JoinGame({ game, refetch }: Props) {
 
             <Button
               className="w-full bg-zinc-900 py-6 font-medium text-white hover:bg-zinc-800"
-              disabled={!simulation.data}
+              disabled={!simulation.data || alreadyJoined.data}
               onClick={handleJoinGame}
               loading={
                 simulation.isLoading || tx.isPending || receipt.isLoading
               }
             >
-              Enter Game
+              {alreadyJoined.data ? 'Joined' : 'Enter Game'}
             </Button>
 
             {simulation.error && (
