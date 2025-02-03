@@ -6,6 +6,7 @@ import { Address, parseEther } from 'viem'
 import { UseWriteContractReturnType, useWriteContract } from 'wagmi'
 
 import { useContractEvents } from '@/hooks/useContractEvents'
+import { replaceBigInts } from '@/lib/replaceBigInts'
 
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
@@ -178,21 +179,25 @@ function ContractEvents({ tx }: { tx: UseWriteContractReturnType }) {
       </CardHeader>
       <CardContent>
         <div className="relative flex flex-col gap-6 overflow-scroll">
-          {events?.map(({ eventName, args }) => (
-            <div
-              key={`${eventName}-${JSON.stringify(args)}`}
-              className="relative max-w-full [&:not(:last-child)]:border-b [&:not(:last-child)]:pb-6"
-            >
-              <p>{eventName}</p>
-              <pre className="max-w-full">
-                {Object.entries(args).map(([key, value]) => (
-                  <p key={key}>
-                    {key}: {value}
-                  </p>
-                ))}
-              </pre>
-            </div>
-          ))}
+          {events?.map((event) => {
+            const args = replaceBigInts(event.args, (x) => x.toString())
+
+            return (
+              <div
+                key={`${event.eventName}-${JSON.stringify(args)}`}
+                className="relative max-w-full [&:not(:last-child)]:border-b [&:not(:last-child)]:pb-6"
+              >
+                <p>{event.eventName}</p>
+                <pre className="max-w-full">
+                  {Object.entries(args).map(([key, value]) => (
+                    <p key={key}>
+                      {key}: {value}
+                    </p>
+                  ))}
+                </pre>
+              </div>
+            )
+          })}
         </div>
       </CardContent>
     </Card>

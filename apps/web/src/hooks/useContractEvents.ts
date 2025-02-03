@@ -1,4 +1,4 @@
-import { QueryKey, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { GAMESHOW_CONTRACT } from 'contracts/deployments'
 import { decodeEventLog } from 'viem'
 import { usePublicClient } from 'wagmi'
@@ -15,6 +15,7 @@ type Props = {
   eventName?: (typeof eventAbiItems)[number]['name']
 }
 
+// TODO: Refine the return type based on the `eventName`
 export function useContractEvents({
   queryKey,
   refetchInterval = false,
@@ -46,23 +47,9 @@ export function useContractEvents({
         })
       )
 
-      const formattedLogs = decodedLogs.map((log) => {
-        const { eventName, args } = log
-
-        // If there is a bigint in the args, convert it to a string
-        const formattedArgs = Object.fromEntries(
-          Object.entries(args || {}).map(([key, value]) => [
-            key,
-            typeof value === 'bigint' ? value.toString() : value,
-          ])
-        )
-
-        return { eventName, args: formattedArgs }
-      })
-
       const filteredLogs = eventName
-        ? formattedLogs.filter((log) => log.eventName === eventName)
-        : formattedLogs
+        ? decodedLogs.filter((log) => log.eventName === eventName)
+        : decodedLogs
 
       return filteredLogs.reverse()
     },
