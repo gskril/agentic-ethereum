@@ -155,6 +155,30 @@ describe('Tests', function () {
       })
       expect(contractBalanceAfter).to.equal(0n)
     })
+
+    it('should let a player submit multiple responses', async function () {
+      const { contract } = await loadFixture(deploy)
+      await createGame(contract, account1)
+      const [, , fee, , startTime, duration] = await contract.read.games([0n])
+
+      // Join the game from account 2
+      await contract.write.joinGame([0n], { account: account2, value: fee })
+
+      await time.increaseTo(startTime)
+      await startGame(contract, account1)
+
+      // Submit initial responses
+      const responses = ['0x1234', '0x5678', '0x9abc'] as const
+      await contract.write.submitResponses([0n, responses], {
+        account: account2,
+      })
+
+      // Submit new responses to replace the previous ones
+      const newResponses = ['0x1111', '0x2222', '0x3333'] as const
+      await contract.write.submitResponses([0n, newResponses], {
+        account: account2,
+      })
+    })
   })
 
   describe('Negative tests', function () {
