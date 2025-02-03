@@ -1,20 +1,24 @@
 'use client'
 
-import { useEnsName } from 'wagmi'
+import { useEffect } from 'react'
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Game } from '@/hooks/useLatestGame'
-import { truncateAddress } from '@/lib/utils'
 
 type Props = {
   game: Game
+  refetch: () => void
 }
 
-export function WinnerChosen({ game }: Props) {
-  const { data: name } = useEnsName({
-    address: game.winner,
-    chainId: 1,
-  })
+export function WaitingToStart({ game, refetch }: Props) {
+  // Call refetch every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch()
+    }, 10_000)
+
+    return () => clearInterval(interval)
+  }, [refetch])
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-50 p-4">
@@ -25,7 +29,7 @@ export function WinnerChosen({ game }: Props) {
           </h1>
         </CardHeader>
         <CardContent>
-          <p>Winner: {name ?? truncateAddress(game.winner)}</p>
+          <p>Waiting for the agent to start the game...</p>
         </CardContent>
       </Card>
     </div>

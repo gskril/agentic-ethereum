@@ -5,6 +5,7 @@ import { AlertCircle, Loader2 } from 'lucide-react'
 import { ActiveGame } from '@/components/ActiveGame'
 import { JoinGame } from '@/components/JoinGame'
 import { WaitingToSettle } from '@/components/WaitingToSettle'
+import { WaitingToStart } from '@/components/WaitingToStart'
 import { WinnerChosen } from '@/components/WinnerChosen'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { useLatestGame } from '@/hooks/useLatestGame'
@@ -39,6 +40,10 @@ export default function Home() {
 
   if (data.state === 'open') {
     return <JoinGame game={data} refetch={refetch} />
+  }
+
+  if (data.state === 'waiting-start') {
+    return <WaitingToStart game={data} refetch={refetch} />
   }
 
   if (data.state === 'active') {
