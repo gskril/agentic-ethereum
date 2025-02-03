@@ -115,7 +115,7 @@ contract GameShow is Ownable {
         if (msg.value != game.entryFee) revert InvalidEntryFee();
         if (block.timestamp > game.startTime) revert TooLateToJoin();
         if (game.playersCount >= game.playersLimit) revert GameIsFull();
-        if (game.responses[msg.sender].length > 0) revert AlreadyJoined();
+        if (joinedGame(_gameId, msg.sender)) revert AlreadyJoined();
 
         _;
     }
@@ -131,7 +131,7 @@ contract GameShow is Ownable {
         if (game.state == GameState.Empty) revert GameDoesNotExist();
         if (game.state < GameState.Active) revert GameHasNotStarted();
         if (block.timestamp > game.startTime + game.duration) revert GameHasEnded();
-        if (game.responses[msg.sender].length == 0) revert Unauthorized();
+        if (!joinedGame(_gameId, msg.sender)) revert Unauthorized();
 
         _;
     }
@@ -172,6 +172,11 @@ contract GameShow is Ownable {
         }
 
         emit ResponsesSubmitted(msg.sender, _gameId, _responses);
+    }
+
+    function joinedGame(uint256 _gameId, address _player) public view returns (bool) {
+        Game storage game = games[_gameId];
+        return game.responses[_player].length > 0;
     }
 
     /*//////////////////////////////////////////////////////////////

@@ -24,7 +24,17 @@ export const GAMESHOW_CONTRACT = {
     },
     {
       inputs: [],
+      name: 'CannotExecuteDuringGame',
+      type: 'error',
+    },
+    {
+      inputs: [],
       name: 'CannotStartGame',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'FailedToExecute',
       type: 'error',
     },
     {
@@ -311,6 +321,42 @@ export const GAMESHOW_CONTRACT = {
       type: 'function',
     },
     {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_to',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: '_value',
+          type: 'uint256',
+        },
+        {
+          internalType: 'bytes',
+          name: '_data',
+          type: 'bytes',
+        },
+      ],
+      name: 'execute',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'fee',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [],
       name: 'gameCount',
       outputs: [
@@ -383,6 +429,30 @@ export const GAMESHOW_CONTRACT = {
       name: 'joinGame',
       outputs: [],
       stateMutability: 'payable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '_gameId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address',
+          name: '_player',
+          type: 'address',
+        },
+      ],
+      name: 'joinedGame',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
       type: 'function',
     },
     {
