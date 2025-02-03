@@ -37,6 +37,7 @@ export function useLatestGame() {
         startTime,
         duration,
         playersCount,
+        winner,
       ] = await viemClient.readContract({
         ...GAMESHOW_CONTRACT,
         functionName: 'games',
@@ -57,6 +58,7 @@ export function useLatestGame() {
         startTime,
         duration,
         playersCount,
+        winner,
       } as const
     },
   })

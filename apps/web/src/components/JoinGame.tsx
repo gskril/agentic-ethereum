@@ -13,6 +13,7 @@ import {
   useWriteContract,
 } from 'wagmi'
 
+import { CountdownTimer } from '@/components/CountdownTimer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Game } from '@/hooks/useLatestGame'
@@ -76,8 +77,9 @@ export function JoinGame({ game, refetch }: Props) {
         </CardHeader>
         <CardContent>
           <CountdownTimer
-            startTime={Number(game.startTime)}
-            refetch={refetch}
+            targetTime={game.startTime}
+            onComplete={refetch}
+            showHours={true}
           />
 
           {/* Game Details */}
@@ -148,39 +150,3 @@ export function JoinGame({ game, refetch }: Props) {
     </div>
   )
 }
-
-const CountdownTimer = React.memo(
-  ({ startTime, refetch }: { startTime: number; refetch: () => void }) => {
-    const [now, setNow] = React.useState(Math.floor(Date.now() / 1000))
-    const seconds = Number(startTime) - now
-    const timeLeft = secondsToTime(seconds)
-
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setNow(Math.floor(Date.now() / 1000))
-      }, 1000)
-
-      return () => clearInterval(interval)
-    }, [])
-
-    // Refetch the game when the countdown is over
-    useEffect(() => {
-      if (seconds <= 0) {
-        refetch()
-      }
-    }, [seconds])
-
-    return (
-      <div className="mb-10 grid grid-cols-3 gap-2">
-        {Object.entries(timeLeft).map(([unit, value]) => (
-          <div key={unit} className="text-center">
-            <div className="font-mono text-4xl font-bold text-zinc-900">
-              {String(value).padStart(2, '0')}
-            </div>
-            <div className="text-sm capitalize text-zinc-500">{unit}</div>
-          </div>
-        ))}
-      </div>
-    )
-  }
-)
