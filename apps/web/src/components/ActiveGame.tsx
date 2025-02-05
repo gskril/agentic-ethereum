@@ -83,8 +83,8 @@ export function ActiveGame({ game, refetch }: Props) {
           </h1>
 
           <CardDescription className="text-center">
-            You can submit your answers as many times as you'd like until the
-            timer runs out.
+            You can submit your answers as many times as you&apos;d like until
+            the timer runs out.
           </CardDescription>
         </CardHeader>
         <CardContent>
