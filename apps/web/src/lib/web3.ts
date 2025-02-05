@@ -1,5 +1,5 @@
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
-import { GAMESHOW_CONTRACT } from 'contracts/deployments'
+import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import { createConfig, http } from 'wagmi'
 import { base, hardhat, mainnet } from 'wagmi/chains'
 

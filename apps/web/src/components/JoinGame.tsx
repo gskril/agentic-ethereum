@@ -1,7 +1,7 @@
 'use client'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { GAMESHOW_CONTRACT } from 'contracts/deployments'
+import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import { Users } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { formatEther } from 'viem'

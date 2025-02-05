@@ -1,3 +1,4 @@
+// This should probably be in a separate "shared" package but this works fine for now
 export const GAMESHOW_CONTRACT = {
   address: '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
   abi: [

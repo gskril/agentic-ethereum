@@ -1,7 +1,7 @@
 'use client'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { GAMESHOW_CONTRACT } from 'contracts/deployments'
+import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import { Address, parseEther } from 'viem'
 import { UseWriteContractReturnType, useWriteContract } from 'wagmi'
 

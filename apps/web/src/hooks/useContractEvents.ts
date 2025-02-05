@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { GAMESHOW_CONTRACT } from 'contracts/deployments'
+import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import { decodeEventLog } from 'viem'
 import { usePublicClient } from 'wagmi'
 

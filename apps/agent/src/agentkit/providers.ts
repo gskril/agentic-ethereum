@@ -1,7 +1,8 @@
 import { EvmWalletProvider, customActionProvider } from '@coinbase/agentkit'
-import { GAMESHOW_CONTRACT } from 'contracts/deployments'
 import { TransactionReceipt, encodeFunctionData, isAddress } from 'viem'
 import { z } from 'zod'
+
+import { GAMESHOW_CONTRACT } from '../contract.js'
 
 const createGameSchema = z.object({
   title: z.string().describe('The title of the game'),

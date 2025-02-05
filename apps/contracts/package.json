@@ -10,9 +10,6 @@
     "deploy:baseSepolia": "hardhat run scripts/deploy.ts --network baseSepolia",
     "deploy:local": "hardhat run scripts/fund-eoa.ts --network localhost && hardhat run scripts/deploy.ts --network localhost"
   },
-  "exports": {
-    "./deployments": "./deployments.ts"
-  },
   "devDependencies": {
     "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",

@@ -21,5 +21,9 @@
     "dotenv": "^16.4.7",
     "viem": "^2.22.10",
     "zod": "^3.24.1"
+  },
+  "exports": {
+    "./contract": "./dist/contract.js",
+    "./src/*": "./src/*.ts"
   }
 }
