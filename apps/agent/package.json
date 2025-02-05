@@ -1,0 +1,23 @@
+{
+  "name": "agent",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "license": "ISC",
+  "scripts": {
+    "dev": "tsc && node ./dist/index.js",
+    "build": "tsc",
+    "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "@coinbase/agentkit": "^0.1.1",
+    "@langchain/core": "^0.3.37",
+    "@langchain/openai": "^0.4.2",
+    "@lit-protocol/constants": "^7.0.4",
+    "@lit-protocol/lit-node-client-nodejs": "^7.0.4",
+    "contracts": "workspace:^",
+    "dotenv": "^16.4.7",
+    "viem": "^2.22.10",
+    "zod": "^3.24.1"
+  }
+}
