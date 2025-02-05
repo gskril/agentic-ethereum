@@ -272,8 +272,13 @@ contract GameShow is Ownable {
         uint256 totalTicketValue = game.entryFee * game.playersCount;
         uint256 operatorShare = (totalTicketValue * fee) / 10000;
         uint256 winnerPrize = totalTicketValue - operatorShare;
-        (bool success, ) = _winner.call{value: winnerPrize}("");
-        if (!success) revert FailedToSendPrize();
+
+        // Only send the prize if the winner is not the contract itself
+        if (_winner != address(this)) {
+            (bool success, ) = _winner.call{value: winnerPrize}("");
+            if (!success) revert FailedToSendPrize();
+        }
+
         emit GameSettled(_gameId, _winner, winnerPrize);
     }
 
