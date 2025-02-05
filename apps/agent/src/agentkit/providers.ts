@@ -1,5 +1,12 @@
 import { EvmWalletProvider, customActionProvider } from '@coinbase/agentkit'
-import { TransactionReceipt, encodeFunctionData, isAddress } from 'viem'
+import {
+  TransactionReceipt,
+  decodeEventLog,
+  encodeFunctionData,
+  isAddress,
+  parseAbi,
+  parseEther,
+} from 'viem'
 import { z } from 'zod'
 
 import { GAMESHOW_CONTRACT } from '../contract.js'
@@ -7,7 +14,7 @@ import { GAMESHOW_CONTRACT } from '../contract.js'
 const createGameSchema = z.object({
   title: z.string().describe('The title of the game'),
   entryFee: z
-    .bigint()
+    .number()
     .describe('The entry fee of the game in Ether, from 0.001 to 0.01'),
   playersLimit: z
     .bigint()
@@ -35,7 +42,7 @@ export const createGame = customActionProvider<EvmWalletProvider>({
       functionName: 'createGame',
       args: [
         args.title,
-        args.entryFee,
+        parseEther(args.entryFee.toString()),
         args.playersLimit,
         args.expectedStartTime,
         args.duration,
@@ -55,7 +62,19 @@ export const createGame = customActionProvider<EvmWalletProvider>({
       throw new Error('Game creation failed')
     }
 
-    return `A new game titled "${args.title}" has been created`
+    const decodedLogs = receipt.logs.map((log) =>
+      decodeEventLog({
+        abi: GAMESHOW_CONTRACT.abi,
+        data: log.data,
+        topics: log.topics,
+      })
+    )
+
+    const gameCreatedLog = decodedLogs.find(
+      (log) => log.eventName === 'GameCreated'
+    )
+
+    return `A new game titled "${args.title}" has been created with ID ${gameCreatedLog?.args.gameId.toString()}`
   },
 })
 
@@ -124,5 +143,14 @@ export const settleGame = customActionProvider<EvmWalletProvider>({
     }
 
     return `The game has been settled and the prize has been sent to the winner`
+  },
+})
+
+export const getCurrentTimestamp = customActionProvider({
+  name: 'get_current_timestamp',
+  description: 'Get the current unix timestamp in seconds',
+  schema: z.object({}),
+  invoke: async () => {
+    return Math.floor(Date.now() / 1000)
   },
 })
