@@ -1,6 +1,10 @@
 # Contracts
 
-Hardhat project for building smart contracts. The deploy script uses CREATE2 to easily mine a vanity address.
+## Deployments
+
+| Network      | Address                                    |
+| ------------ | ------------------------------------------ |
+| Base Sepolia | 0x00000000f899BD68d09603Bb13E02A7e06B071bd |
 
 ## Local Development
 

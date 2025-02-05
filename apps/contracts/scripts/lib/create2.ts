@@ -27,12 +27,15 @@ export async function create2Deploy({
   const publicClient = await hre.viem.getPublicClient()
   const [walletClient] = await hre.viem.getWalletClients()
 
-  const { initCode } = await getInitCode(contractName, encodedArgs)
+  const { initCode, initCodeHash } = await getInitCode(
+    contractName,
+    encodedArgs
+  )
 
   const address = await publicClient.readContract({
     ...create2Factory,
     functionName: 'computeAddress',
-    args: [salt, initCode],
+    args: [salt, initCodeHash],
   })
 
   const deployTx = await walletClient.writeContract({
