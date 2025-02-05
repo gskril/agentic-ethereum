@@ -1,15 +1,16 @@
 import { EvmWalletProvider, customActionProvider } from '@coinbase/agentkit'
 import {
+  EncodeFunctionDataParameters,
   TransactionReceipt,
   decodeEventLog,
   encodeFunctionData,
   isAddress,
-  parseAbi,
   parseEther,
 } from 'viem'
 import { z } from 'zod'
 
 import { GAMESHOW_CONTRACT } from '../contract.js'
+import { LitAgentWalletProvider } from '../lit/WalletProvider.js'
 
 const createGameSchema = z.object({
   title: z.string().describe('The title of the game'),
@@ -17,42 +18,45 @@ const createGameSchema = z.object({
     .number()
     .describe('The entry fee of the game in Ether, from 0.001 to 0.01'),
   playersLimit: z
-    .bigint()
+    .number()
     .describe('The maximum number of players, from 5 to 10'),
   expectedStartTime: z
-    .bigint()
+    .number()
     .describe(
       'The expected start time of the game as a unix timestamp (seconds)'
     ),
   duration: z
-    .bigint()
+    .number()
     .describe('The duration of the game in seconds, from 60 to 180'),
   questionsCount: z
-    .bigint()
+    .number()
     .describe('The number of questions in the game, from 3 to 10'),
 })
 
-export const createGame = customActionProvider<EvmWalletProvider>({
+export const createGame = customActionProvider<LitAgentWalletProvider>({
   name: 'create_game',
   description: 'Create a new game show',
   schema: createGameSchema,
   invoke: async (walletProvider, args: z.infer<typeof createGameSchema>) => {
-    const calldata = encodeFunctionData({
+    const viemCall = {
       ...GAMESHOW_CONTRACT,
       functionName: 'createGame',
       args: [
         args.title,
         parseEther(args.entryFee.toString()),
-        args.playersLimit,
-        args.expectedStartTime,
-        args.duration,
-        args.questionsCount,
+        BigInt(args.playersLimit),
+        BigInt(args.expectedStartTime),
+        BigInt(args.duration),
+        BigInt(args.questionsCount),
       ],
-    })
+    } as const satisfies EncodeFunctionDataParameters
+
+    // Simulating the call lets the LLM understand the error if something goes wrong
+    await walletProvider.simulateContract(viemCall)
 
     const txHash = await walletProvider.sendTransaction({
       to: GAMESHOW_CONTRACT.address,
-      data: calldata,
+      data: encodeFunctionData(viemCall),
     })
 
     const receipt: TransactionReceipt =
