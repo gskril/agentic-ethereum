@@ -1,3 +1,4 @@
+import { farcasterFrame } from '@farcaster/frame-wagmi-connector'
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
 import { createConfig, http } from 'wagmi'
 import { baseSepolia, mainnet } from 'wagmi/chains'
@@ -17,7 +18,7 @@ export const chains = [baseSepolia, mainnet] as const
 
 export const wagmiConfig = createConfig({
   chains,
-  connectors,
+  connectors: [...connectors, farcasterFrame()],
   transports: {
     [baseSepolia.id]: http(process.env.NEXT_PUBLIC_BASE_RPC),
     [mainnet.id]: http(process.env.NEXT_PUBLIC_ETH_RPC),

@@ -1,0 +1,18 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjM0NywidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEI0RjE5NWU5QTk4MkMyYkE1ODk4OENiMjEzMjU1NzM3OGU5RTZiMDgifQ",
+    "payload": "eyJkb21haW4iOiJleGFtcGxlLmNvbSJ9",
+    "signature": "MHhkYzc5NjJmZjhlZjY3YWQwZGJhZjhjODE5NzViZjI3ODVjMzk4NzE3NDlkY2Q5MmE1MmFlZmE4M2Y0OWVjYjkzM2VmZmE3ZGZmMTcyMWI2ZTQ2OGEwMGFhZDEyNmU0ZGI2NGI1YThkY2ZhZmNkNzMwYmNjMjNiYTU1NTA4N2U4NTFi"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Example Frame",
+    "iconUrl": "https://example.com/icon.png",
+    "homeUrl": "https://example.com",
+    "imageUrl": "https://example.com/image.png",
+    "buttonTitle": "Check this out",
+    "splashImageUrl": "https://example.com/splash.png",
+    "splashBackgroundColor": "#eeccff",
+    "webhookUrl": "https://example.com/api/webhook"
+  }
+}
