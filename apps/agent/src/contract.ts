@@ -1,5 +1,6 @@
 // This should probably be in a separate "shared" package but this works fine for now
 export const GAMESHOW_CONTRACT = {
+  fromBlock: 21509218n,
   address: '0x00000000a3A1D9BA654e4c9855093DbF4029A382',
   abi: [
     {

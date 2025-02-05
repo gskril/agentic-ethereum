@@ -34,10 +34,7 @@ export function useContractEvents({
     refetchInterval,
     queryKey: ['events', ...queryKeyArray],
     queryFn: async () => {
-      const logs = await viemClient.getLogs({
-        address: GAMESHOW_CONTRACT.address,
-        fromBlock: BigInt(0),
-      })
+      const logs = await viemClient.getLogs(GAMESHOW_CONTRACT)
 
       const decodedLogs = logs.map((log) =>
         decodeEventLog({
