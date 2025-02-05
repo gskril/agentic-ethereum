@@ -26,9 +26,15 @@ importers:
       '@coinbase/agentkit':
         specifier: ^0.1.1
         version: 0.1.1(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)
+      '@coinbase/agentkit-langchain':
+        specifier: ^0.1.0
+        version: 0.1.0(@coinbase/coinbase-sdk@0.17.0(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1))(bufferutil@4.0.8)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1))(typescript@5.5.4)(utf-8-validate@5.0.10)
       '@langchain/core':
         specifier: ^0.3.37
         version: 0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1))
+      '@langchain/langgraph':
+        specifier: ^0.2.44
+        version: 0.2.44(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1)))
       '@langchain/openai':
         specifier: ^0.4.2
         version: 0.4.2(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1)))(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -228,6 +234,11 @@ packages:
 
   '@cfworker/json-schema@4.1.1':
     resolution: {integrity: sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og==}
+
+  '@coinbase/agentkit-langchain@0.1.0':
+    resolution: {integrity: sha512-JJj+vzPeoVB6RbY31tQEOYXtb6NrEdXbf2KlRABF/bhCo84fpGlawqIxCsIOf1HXcOx+erG2NokUr8k53/fulw==}
+    peerDependencies:
+      '@coinbase/coinbase-sdk': ^0.15.0
 
   '@coinbase/agentkit@0.1.1':
     resolution: {integrity: sha512-jEI9Zif0NEhGHgTCm7KkWpU8XFJegETKRf3/iYWLtdqVQonbLwEgbGgGHH6FuRX8eWQUlccMxlBFv8hnDBBLmg==}
@@ -565,6 +576,21 @@ packages:
   '@langchain/core@0.3.37':
     resolution: {integrity: sha512-LFk9GqHxcyCFx0oXvCBP7vDZIOUHYzzNU7JR+2ofIMnfkBLzcCKzBLySQDfPtd13PrpGHkaeOeLq8H1Tqi9lSw==}
     engines: {node: '>=18'}
+
+  '@langchain/langgraph-checkpoint@0.0.15':
+    resolution: {integrity: sha512-AiJkvsYHqNbCh1Tx823qs2lf2qRqeB4EAMejirOk8gkpPszAGYua5c3niKYkcKR2tU8Snhrmj7Gm9HKZSFOXyw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@langchain/core': '>=0.2.31 <0.4.0'
+
+  '@langchain/langgraph-sdk@0.0.36':
+    resolution: {integrity: sha512-KkAZM0uXBaMcD/dpGTBppOhbvNX6gz+Y1zFAC898OblegFkSvICrkd0oRQ5Ro/GWK/NAoDymnMUDXeZDdUkSuw==}
+
+  '@langchain/langgraph@0.2.44':
+    resolution: {integrity: sha512-CR9LB7sytdx0Ink56qVUPorDo5gW5m7iOU2ypu1OYA4l5aIrT4xGvHCwrGH9RE80pb/d0FglVUkEgEfuvSDbmw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@langchain/core': '>=0.2.36 <0.3.0 || >=0.3.9 < 0.4.0'
 
   '@langchain/openai@0.4.2':
     resolution: {integrity: sha512-Cuj7qbVcycALTP0aqZuPpEc7As8cwiGaU21MhXRyZFs+dnWxKYxZ1Q1z4kcx6cYkq/I+CNwwmk+sP+YruU73Aw==}
@@ -5374,6 +5400,19 @@ snapshots:
 
   '@cfworker/json-schema@4.1.1': {}
 
+  '@coinbase/agentkit-langchain@0.1.0(@coinbase/coinbase-sdk@0.17.0(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1))(bufferutil@4.0.8)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1))(typescript@5.5.4)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@coinbase/agentkit': 0.1.1(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)
+      '@coinbase/coinbase-sdk': 0.17.0(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1)
+      '@langchain/core': 0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1))
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - openai
+      - typescript
+      - utf-8-validate
+
   '@coinbase/agentkit@0.1.1(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)':
     dependencies:
       '@coinbase/coinbase-sdk': 0.17.0(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1)
@@ -5913,6 +5952,26 @@ snapshots:
       zod-to-json-schema: 3.24.1(zod@3.24.1)
     transitivePeerDependencies:
       - openai
+
+  '@langchain/langgraph-checkpoint@0.0.15(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1)))':
+    dependencies:
+      '@langchain/core': 0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1))
+      uuid: 10.0.0
+
+  '@langchain/langgraph-sdk@0.0.36':
+    dependencies:
+      '@types/json-schema': 7.0.15
+      p-queue: 6.6.2
+      p-retry: 4.6.2
+      uuid: 9.0.1
+
+  '@langchain/langgraph@0.2.44(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1)))':
+    dependencies:
+      '@langchain/core': 0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1))
+      '@langchain/langgraph-checkpoint': 0.0.15(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1)))
+      '@langchain/langgraph-sdk': 0.0.36
+      uuid: 10.0.0
+      zod: 3.24.1
 
   '@langchain/openai@0.4.2(@langchain/core@0.3.37(openai@4.82.0(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(zod@3.24.1)))(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
     dependencies:
@@ -7874,7 +7933,7 @@ snapshots:
 
   axios@1.7.3:
     dependencies:
-      follow-redirects: 1.15.6(debug@4.3.6)
+      follow-redirects: 1.15.6
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -9076,6 +9135,8 @@ snapshots:
   flat@5.0.2: {}
 
   flatted@3.3.1: {}
+
+  follow-redirects@1.15.6: {}
 
   follow-redirects@1.15.6(debug@4.3.6):
     optionalDependencies:

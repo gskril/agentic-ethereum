@@ -1,10 +1,11 @@
-import { AgentKit } from '@coinbase/agentkit'
-import { ChatOpenAI } from '@langchain/openai'
+import 'dotenv/config'
 
-import { createGame } from './agentkit/providers'
-import { LitAgentWalletProvider } from './lit/WalletProvider'
+import { initializeAgent } from './agentkit/init.js'
 
-const agentKit = await AgentKit.from({
-  walletProvider: new LitAgentWalletProvider(),
-  actionProviders: [createGame],
+const { agent } = await initializeAgent()
+
+const res = await agent.invoke({
+  messages: ['hi'],
 })
+
+console.log(res)
