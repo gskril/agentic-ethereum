@@ -13,24 +13,59 @@ import { GAMESHOW_CONTRACT } from '../contract.js'
 import { LitAgentWalletProvider } from '../lit/WalletProvider.js'
 
 const createGameSchema = z.object({
-  title: z.string().describe('The title of the game'),
+  title: z
+  .string()
+  .describe(`
+    <description>
+      <title>A short, concise title hinting at the game's overall topic</title>
+      <instructions>This is the only detail players see before questions are revealed.</instructions>
+    </description>
+  `),
+
   entryFee: z
     .number()
-    .describe('The entry fee of the game in Ether, from 0.001 to 0.01'),
+    .describe(`
+      <description>
+        <range>0.001 - 0.01 Ether</range>
+        <instructions>Participants pay this fee to enter. All fees are pooled and awarded to the winner.</instructions>
+      </description>
+    `),
+
   playersLimit: z
     .number()
-    .describe('The maximum number of players, from 5 to 10'),
+    .describe(`
+      <description>
+        <range>5 - 10</range>
+        <instructions>Defines the minimum and maximum number of participants allowed in a single game.</instructions>
+      </description>
+    `),
+
   expectedStartTime: z
     .number()
-    .describe(
-      'The expected start time of the game as a unix timestamp (seconds)'
-    ),
+    .describe(`
+      <description>
+        <timeFormat>Unix timestamp (in seconds)</timeFormat>
+        <instructions>When this time is reached, questions become visible, and participants can submit answers.</instructions>
+      </description>
+    `),
+
   duration: z
     .number()
-    .describe('The duration of the game in seconds, from 60 to 180'),
+    .describe(`
+      <description>
+        <range>60 - 180 seconds</range>
+        <instructions>The total time window for submitting encrypted answers. No submissions accepted once it elapses.</instructions>
+      </description>
+    `),
+
   questionsCount: z
     .number()
-    .describe('The number of questions in the game, from 3 to 10'),
+    .describe(`
+      <description>
+        <range>3 - 10</range>
+        <instructions>Number of questions to be revealed once the game begins.</instructions>
+      </description>
+    `),
 })
 
 export const createGame = customActionProvider<LitAgentWalletProvider>({
