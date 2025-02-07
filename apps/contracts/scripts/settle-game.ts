@@ -14,7 +14,7 @@ async function main() {
   */
   const tx = await contract.write.settleGame([0n, GAMESHOW_CONTRACT.address])
 
-  console.log('Game started', tx)
+  console.log('Game settled', tx)
 }
 
 // We recommend this pattern to be able to use async/await everywhere
