@@ -10,6 +10,10 @@ export function truncateAddress(address: string) {
 }
 
 export function secondsToTime(seconds: number | bigint) {
+  if (Number(seconds) <= 0) {
+    return { hours: 0, minutes: 0, seconds: 0 }
+  }
+
   const hours = Math.floor(Number(seconds) / 3600)
   const minutes = Math.floor((Number(seconds) % 3600) / 60)
   const remainingSeconds = Number(seconds) % 60
