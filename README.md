@@ -26,14 +26,15 @@ Webapp
   - [ ] Show user profiles as they join
 - [x] Screen for submitting responses
 - [x] Screen for game ended with the winner
+- [ ] Encrypt player responses with Lit Actions
 
 Agent
 
 - [x] Have a wallet
   - [ ] Make trustless with Lit Agent Wallet
-- [ ] Decrypt player responses and judge them (pending Lit Agent Wallet)
+- [ ] Decrypt player responses and judge them (pending encryption on frontend)
 - [x] Know how to call the contract functions
   - [x] Come up with game topic
   - [x] Come up with questions
   - [x] Award the prize to the winner
-- [ ] Schedule its own actions
+- [x] Schedule its own actions

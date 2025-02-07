@@ -6,13 +6,13 @@ type RunAgentOptions = {
   interval: number
 }
 
-// const steps = [
-//   "Create a game that starts 120 seconds after the current unix timestamp in seconds. If it doens't work the first time, don't try again. Just explain the error and shut down.",
-//   'Based on your most recently created game, come up with a list of relevant questions. They should be fun and engaging for users to answer with a sentence or less.',
-// ]
-
-// TODO: Write a prompt that runs in a loop, and allows the agent to detect what stage of a game it is in and host it accordingly.
-const prompt = 'Create a game'
+const prompt =
+  'Check the most recent game state. The following are instructions to do depending on the game state:\n' +
+  'If there is not an ongoing game (state is "empty" or "settled"), create a new one that starts in 65 seconds from the current unix timestamp.\n' +
+  'If the state is "open" or "active" do not do anything.\n' +
+  'If the state is "waiting-start", go ahead and start the game.\n' +
+  'If the state is "waiting-settle", go ahead and settle the game.\n' +
+  "Don't do anything outside of these steps."
 
 export async function startAgent({ interval }: RunAgentOptions) {
   const { agent, config } = await initializeAgent()

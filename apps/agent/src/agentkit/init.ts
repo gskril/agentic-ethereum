@@ -4,9 +4,9 @@ import { RunnableConfig } from '@langchain/core/runnables'
 import { MemorySaver } from '@langchain/langgraph'
 import { createReactAgent } from '@langchain/langgraph/prebuilt'
 import { ChatOpenAI } from '@langchain/openai'
-import { Hex, createWalletClient, http } from 'viem'
+import { Hex, WalletClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { baseSepolia } from 'viem/chains'
+import { baseSepolia, hardhat } from 'viem/chains'
 
 import { LitAgentWalletProvider } from '../lit/WalletProvider.js'
 import {
@@ -17,11 +17,21 @@ import {
 } from './tools.js'
 
 export async function initializeAgent() {
-  const walletClient = createWalletClient({
+  const isDev = process.env.NODE_ENV === 'development'
+
+  let walletClient: WalletClient = createWalletClient({
     account: privateKeyToAccount(process.env.DEPLOYER_KEY as Hex),
     chain: baseSepolia,
     transport: http(process.env.BASE_RPC),
   })
+
+  if (isDev) {
+    walletClient = createWalletClient({
+      account: privateKeyToAccount(process.env.DEPLOYER_KEY as Hex),
+      chain: hardhat,
+      transport: http(),
+    })
+  }
 
   const agentKit = await AgentKit.from({
     walletProvider: new LitAgentWalletProvider(walletClient),
