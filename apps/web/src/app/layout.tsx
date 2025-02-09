@@ -3,16 +3,11 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import { ClientProviders } from '@/components/providers/ClientProviders'
-import { cn } from '@/lib/utils'
+import { BASE_URL, cn } from '@/lib/utils'
 
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
-
-const BASE_URL = new URL(
-  process.env.NEXT_PUBLIC_BASE_URL ||
-    `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-)
 
 export const metadata: Metadata = {
   title: 'Onchain Trivia',

@@ -19,3 +19,8 @@ export function secondsToTime(seconds: number | bigint) {
   const remainingSeconds = Number(seconds) % 60
   return { hours, minutes, seconds: remainingSeconds }
 }
+
+export const BASE_URL = new URL(
+  process.env.NEXT_PUBLIC_BASE_URL ||
+    `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+)

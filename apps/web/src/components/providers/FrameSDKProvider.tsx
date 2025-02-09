@@ -1,7 +1,7 @@
 'use client'
 
 import frameSDK, { type Context } from '@farcaster/frame-sdk'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 type FrameContext = Context.FrameContext
 
@@ -31,8 +31,20 @@ export function FrameSDKProvider({ children }: { children: React.ReactNode }) {
   }, [isFrameSDKLoaded])
 
   return (
-    <FrameSDKContext.Provider value={{ context, isLoaded: isFrameSDKLoaded }}>
+    <FrameSDKContext.Provider
+      value={{
+        context,
+        isLoaded: isFrameSDKLoaded,
+      }}
+    >
       {children}
     </FrameSDKContext.Provider>
   )
+}
+
+export function useFrame() {
+  const { context } = useContext(FrameSDKContext)
+  const actions = frameSDK.actions
+
+  return { context, actions }
 }
