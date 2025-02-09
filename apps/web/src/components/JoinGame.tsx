@@ -175,8 +175,10 @@ function PlayerAvatar({ address }: { address: Address }) {
   return (
     <img
       src={`https://ens-api.gregskril.com/avatar/${name ?? 'blah'}?width=64`}
-      className="border-card -mr-2 h-8 w-8 rounded-full border-2"
+      className="border-card h-8 w-8 rounded-full border-2 object-cover [&:not(:last-child)]:-mr-2"
       title={name ?? address}
+      width={32}
+      height={32}
     />
   )
 }
