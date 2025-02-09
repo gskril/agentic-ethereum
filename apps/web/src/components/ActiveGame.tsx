@@ -2,6 +2,7 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
+import { Check } from 'lucide-react'
 import { toHex } from 'viem'
 import { packetToBytes } from 'viem/ens'
 import {
@@ -22,6 +23,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { useContractEvents } from '@/hooks/useContractEvents'
 import { Game } from '@/hooks/useLatestGame'
+
+import { Alert, AlertDescription, AlertTitle } from './ui/alert'
+import { Divider } from './ui/divider'
 
 type Props = {
   game: Game
@@ -74,7 +78,7 @@ export function ActiveGame({ game, refetch }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
-      <ConnectButton />
+      <ConnectButton chainStatus="none" />
 
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
@@ -85,25 +89,30 @@ export function ActiveGame({ game, refetch }: Props) {
             the timer runs out.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <CountdownTimer
             targetTime={game.startTime + game.duration}
             onComplete={refetch}
-            showHours={false}
           />
+
+          <Divider />
 
           <form onSubmit={handleSubmitAnswers}>
             {/* Questions */}
-            <div className="mb-8 space-y-6">
+            <div className="mb-4 space-y-4">
               {gameStartedEvent?.questions.map(
                 (question: string, index: number) => (
-                  <div key={index} className="space-y-2">
-                    <label className="block text-sm font-medium text-zinc-700">
+                  <div key={index} className="space-y-1">
+                    <label
+                      className="block text-sm font-medium text-zinc-700"
+                      htmlFor={`question-${index}`}
+                    >
                       {question}
                     </label>
                     <Input
                       placeholder="Enter your answer"
                       name={`question-${index}`}
+                      id={`question-${index}`}
                     />
                   </div>
                 )
@@ -119,6 +128,16 @@ export function ActiveGame({ game, refetch }: Props) {
             >
               {isJoined.data ? 'Submit Answers' : "You're not in this game"}
             </Button>
+
+            {receipt.isSuccess && (
+              <Alert variant="default" className="mt-4">
+                <Check className="h-4 w-4" />
+                <AlertTitle>Success</AlertTitle>
+                <AlertDescription>
+                  Resubmit to replace your answers.
+                </AlertDescription>
+              </Alert>
+            )}
           </form>
         </CardContent>
       </Card>

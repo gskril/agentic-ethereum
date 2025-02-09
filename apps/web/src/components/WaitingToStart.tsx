@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card, CardDescription, CardHeader } from '@/components/ui/card'
 import { Game } from '@/hooks/useLatestGame'
 
 type Props = {
@@ -25,12 +25,11 @@ export function WaitingToStart({ game, refetch }: Props) {
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
           <h1 className="text-center text-2xl font-bold">{game.title}</h1>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center font-medium">
+
+          <CardDescription className="text-center">
             Waiting for host agent to start the game...
-          </p>
-        </CardContent>
+          </CardDescription>
+        </CardHeader>
       </Card>
     </div>
   )
