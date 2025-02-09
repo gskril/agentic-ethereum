@@ -86,10 +86,6 @@ export function JoinGame({ game, refetch }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
-      {previousGame.data && previousGame.data.winner !== zeroAddress && (
-        <WinnerCard game={previousGame.data} />
-      )}
-
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
           <h1 className="text-center text-2xl font-bold">{game.title}</h1>
@@ -165,6 +161,10 @@ export function JoinGame({ game, refetch }: Props) {
           </div>
         </CardContent>
       </Card>
+
+      {previousGame.data && previousGame.data.winner !== zeroAddress && (
+        <WinnerCard game={previousGame.data} />
+      )}
     </div>
   )
 }

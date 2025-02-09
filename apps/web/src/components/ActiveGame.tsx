@@ -66,7 +66,7 @@ export function ActiveGame({ game, refetch }: Props) {
     chainId: chains[0].id,
   })
 
-  async function handleSubmitAnswers(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmitAnswers(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
     const answers = Object.fromEntries(formData.entries())
