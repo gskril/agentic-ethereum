@@ -16,6 +16,7 @@ const prompt =
   "Don't do anything outside of these steps."
 
 export async function startAgent({ interval }: RunAgentOptions) {
+  console.log(`Starting agent with a ${interval} second interval...\n`)
   const { agent, config } = await initializeAgent()
 
   while (true) {
