@@ -2,4 +2,5 @@ import 'dotenv/config'
 
 import { startAgent } from './agentkit/agent.js'
 
-await startAgent({ interval: 10 })
+const interval = Number(process.env.AGENT_INTERVAL) ?? 10
+await startAgent({ interval })
