@@ -30,7 +30,7 @@ export default function Home() {
 
   if (context && !context.client.added) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 py-6">
         <Button
           onClick={async () => {
             await frameSDK.actions.addFrame()

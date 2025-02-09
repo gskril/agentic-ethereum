@@ -22,7 +22,6 @@ import { secondsToTime } from '@/lib/utils'
 import { chains } from '@/lib/web3'
 
 import { WinnerCard } from './WinnerChosen'
-import { FrameSDKContext } from './providers/FrameSDKProvider'
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { Divider } from './ui/divider'
 
@@ -85,7 +84,7 @@ export function JoinGame({ game, refetch }: Props) {
   const ticketsLeft = Number(game.playersLimit) - Number(game.playersCount)
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 py-6">
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
           <h1 className="text-center text-2xl font-bold">{game.title}</h1>

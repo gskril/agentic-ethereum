@@ -26,7 +26,7 @@ export function WaitingToSettle({ game, refetch }: Props) {
   }, [refetch])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 py-6">
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
           <h1 className="text-center text-2xl font-bold">{game.title}</h1>

@@ -40,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, 'bg-main p-2 py-6 pb-8')}>
+      <body className={cn(inter.className, 'bg-main')}>
         <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
