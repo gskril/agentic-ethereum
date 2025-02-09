@@ -23,6 +23,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { useContractEvents } from '@/hooks/useContractEvents'
 import { Game } from '@/hooks/useGame'
+import { chains } from '@/lib/web3'
 
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { Divider } from './ui/divider'
@@ -49,6 +50,7 @@ export function ActiveGame({ game, refetch }: Props) {
     // @ts-expect-error This only runs when the address is defined
     args: [game.id, address],
     enabled: !!address,
+    chainId: chains[0].id,
   })
 
   const gameStartedEvents = useContractEvents({
@@ -59,7 +61,10 @@ export function ActiveGame({ game, refetch }: Props) {
   const gameStartedEvent = gameStartedEvents.data?.[0]?.args as GameStartedEvent
 
   const tx = useWriteContract()
-  const receipt = useWaitForTransactionReceipt({ hash: tx.data })
+  const receipt = useWaitForTransactionReceipt({
+    hash: tx.data,
+    chainId: chains[0].id,
+  })
 
   async function handleSubmitAnswers(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -73,6 +78,7 @@ export function ActiveGame({ game, refetch }: Props) {
       ...GAMESHOW_CONTRACT,
       functionName: 'submitResponses',
       args: [game.id, responses],
+      chainId: chains[0].id,
     })
   }
 
