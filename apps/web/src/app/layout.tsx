@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import { ClientProviders } from '@/components/providers/ClientProviders'
+import { cn } from '@/lib/utils'
 
 import './globals.css'
 
@@ -41,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(inter.className, 'bg-main')}>
         <ClientProviders>{children}</ClientProviders>
       </body>
     </html>

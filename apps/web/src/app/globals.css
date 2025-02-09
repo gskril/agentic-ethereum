@@ -67,3 +67,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .bg-main {
+    background-image: linear-gradient(
+        hsl(var(--background) / 0.7),
+        hsl(var(--background) / 0.7)
+      ),
+      url('/img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    backdrop-filter: blur(8px);
+  }
+}

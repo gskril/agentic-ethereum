@@ -76,7 +76,7 @@ export function ActiveGame({ game, refetch }: Props) {
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
       <ConnectButton />
 
-      <Card className="w-full max-w-sm bg-white shadow-lg">
+      <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
           <h1 className="text-center text-2xl font-bold">{game.title}</h1>
 
