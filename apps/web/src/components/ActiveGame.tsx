@@ -126,7 +126,7 @@ export function ActiveGame({ game, refetch }: Props) {
               loading={tx.isPending || receipt.isLoading}
               disabled={!isJoined.data}
             >
-              {isJoined.data ? 'Submit Answers' : "You're not in this game"}
+              {isJoined.data ? 'Lock it in!' : "You're not in this game"}
             </Button>
 
             {receipt.isSuccess && (

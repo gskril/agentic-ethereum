@@ -10,7 +10,10 @@ interface FrameContextValue {
   isLoaded: boolean
 }
 
-const FrameSDKContext = createContext<FrameContextValue | undefined>(undefined)
+export const FrameSDKContext = createContext<FrameContextValue>({
+  context: undefined,
+  isLoaded: false,
+})
 
 export function FrameSDKProvider({ children }: { children: React.ReactNode }) {
   const [isFrameSDKLoaded, setIsFrameSDKLoaded] = useState(false)

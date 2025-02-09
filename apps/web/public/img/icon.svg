@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="85" fill="#4F46E5"/>
+  
+  <!-- Circuit Pattern -->
+  <path d="M30 95 H70 M130 95 H170
+           M50 145 L70 125 M150 145 L130 125"
+        stroke="#A5B4FC" stroke-width="3"
+        stroke-linecap="round"/>
+  
+  <!-- Central Robot Head -->
+  <path d="M70 75 H130 V135 H70 V75 Z" fill="#818CF8"/>
+  
+  <!-- Eyes -->
+  <circle cx="85" cy="90" r="8" fill="#C7D2FE"/>
+  <circle cx="115" cy="90" r="8" fill="#C7D2FE"/>
+  <circle cx="85" cy="90" r="4" fill="#4F46E5"/>
+  <circle cx="115" cy="90" r="4" fill="#4F46E5"/>
+  
+  <!-- Antenna -->
+  <path d="M100 75 V55 L90 45 M100 55 L110 45" 
+        stroke="#818CF8" stroke-width="4" 
+        stroke-linecap="round"
+        fill="none"/>
+  
+  <!-- Question Mark -->
+  <path d="M90 110 C90 105, 110 105, 110 110 C110 115, 100 115, 100 120 M100 125 V127" 
+        stroke="#C7D2FE" stroke-width="5"
+        stroke-linecap="round"
+        fill="none"/>
+  
+  <!-- Circuit Connection Points -->
+  <circle cx="30" cy="95" r="3" fill="#A5B4FC"/>
+  <circle cx="170" cy="95" r="3" fill="#A5B4FC"/>
+  <circle cx="50" cy="145" r="3" fill="#A5B4FC"/>
+  <circle cx="150" cy="145" r="3" fill="#A5B4FC"/>
+</svg>

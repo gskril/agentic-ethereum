@@ -19,8 +19,10 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Game, useGame } from '@/hooks/useGame'
 import { useGamePlayers } from '@/hooks/useGamePlayers'
 import { secondsToTime } from '@/lib/utils'
+import { chains } from '@/lib/web3'
 
 import { WinnerCard } from './WinnerChosen'
+import { FrameSDKContext } from './providers/FrameSDKProvider'
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { Divider } from './ui/divider'
 
@@ -41,15 +43,21 @@ export function JoinGame({ game, refetch }: Props) {
     // @ts-expect-error This only runs when the address is defined
     args: [game.id, address],
     enabled: !!address,
+    chainId: chains[0].id,
   })
 
   const tx = useWriteContract()
-  const receipt = useWaitForTransactionReceipt({ hash: tx.data })
+  const receipt = useWaitForTransactionReceipt({
+    hash: tx.data,
+    chainId: chains[0].id,
+  })
+
   const simulation = useSimulateContract({
     ...GAMESHOW_CONTRACT,
     functionName: 'joinGame',
     args: [game.id],
     value: game.entryFee,
+    chainId: chains[0].id,
     query: {
       enabled: alreadyJoined.data === false,
     },

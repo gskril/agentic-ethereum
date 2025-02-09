@@ -6,13 +6,13 @@
   },
   "frame": {
     "version": "1",
-    "name": "Example Frame",
-    "iconUrl": "https://example.com/icon.png",
-    "homeUrl": "https://example.com",
-    "imageUrl": "https://example.com/image.png",
+    "name": "AI-Hosted Onchain Trivia",
+    "iconUrl": "https://trivia.gregskril.com/img/icon.svg",
+    "homeUrl": "https://trivia.gregskril.com",
+    "imageUrl": "https://trivia.gregskril.com/img/opengraph.jpg",
     "buttonTitle": "Check this out",
-    "splashImageUrl": "https://example.com/splash.png",
-    "splashBackgroundColor": "#eeccff",
-    "webhookUrl": "https://example.com/api/webhook"
+    "splashImageUrl": "https://trivia.gregskril.com/img/icon.svg",
+    "splashBackgroundColor": "#E1CFC3",
+    "webhookUrl": "https://trivia.gregskril.com/api/farcaster/webhook"
   }
 }
