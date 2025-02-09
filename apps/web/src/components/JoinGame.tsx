@@ -1,6 +1,6 @@
 'use client'
 
-import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import React, { useEffect } from 'react'
 import { Address, formatEther, zeroAddress } from 'viem'
