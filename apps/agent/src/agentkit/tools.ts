@@ -323,12 +323,40 @@ const getResponsesSchema = z.object({
 
 export const getResponses = customActionProvider<LitAgentWalletProvider>({
   name: 'get_responses',
-  description: 'Get the responses from all players in a game',
+  description:
+    "Get the responses from all players in a game, alongside a reminder of the game's questions",
   schema: getResponsesSchema,
   invoke: async (walletProvider, args: z.infer<typeof getResponsesSchema>) => {
     const publicClient = walletProvider.publicClient
     const block = await publicClient.getBlock()
-    const fromBlock = block.number - 1000n
+    const questions = new Array<string>()
+    let fromBlock = block.number - 1000n
+    let toBlock = block.number
+
+    while (true) {
+      const gameStartedFilter = await publicClient.createEventFilter({
+        address: GAMESHOW_CONTRACT.address,
+        event: GAMESHOW_CONTRACT.abi['23'],
+        fromBlock,
+        toBlock,
+        args: {
+          gameId: BigInt(args.gameId),
+        },
+        strict: true,
+      })
+
+      const gameStartedLogs = await publicClient.getFilterLogs({
+        filter: gameStartedFilter,
+      })
+
+      if (gameStartedLogs.length > 0) {
+        questions.push(...gameStartedLogs[0].args.questions)
+        break
+      }
+
+      fromBlock -= 1000n
+      toBlock -= 1000n
+    }
 
     const filter = await publicClient.createEventFilter({
       address: GAMESHOW_CONTRACT.address,
@@ -355,7 +383,10 @@ export const getResponses = customActionProvider<LitAgentWalletProvider>({
       allResponses.push({ player, responses: decodedResponses })
     }
 
-    return JSON.stringify(allResponses)
+    return JSON.stringify({
+      questions,
+      responses: allResponses,
+    })
   },
 })
 
