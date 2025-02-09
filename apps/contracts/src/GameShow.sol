@@ -25,7 +25,7 @@ contract GameShow is Ownable {
         uint256 duration;
         uint256 playersCount;
         address winner;
-        string[] questions;
+        uint256 questionsCount;
         mapping(address => bool) hasJoined;
     }
 
@@ -164,7 +164,7 @@ contract GameShow is Ownable {
     ) external canSubmitResponses(_gameId) {
         Game storage game = games[_gameId];
 
-        if (_responses.length != game.questions.length) {
+        if (_responses.length != game.questionsCount) {
             revert QuestionsLengthMismatch();
         }
 
@@ -213,7 +213,7 @@ contract GameShow is Ownable {
         game.playersLimit = _playersLimit;
         game.startTime = _expectedStartTime;
         game.duration = _duration;
-        game.questions = new string[](_questionsCount);
+        game.questionsCount = _questionsCount;
 
         emit GameCreated(
             gameId,
@@ -234,7 +234,7 @@ contract GameShow is Ownable {
 
         if (startTime < game.startTime) revert CannotStartGame();
         if (game.state != GameState.Pending) revert CannotStartGame();
-        if (_questions.length != game.questions.length) revert QuestionsLengthMismatch();
+        if (_questions.length != game.questionsCount) revert QuestionsLengthMismatch();
 
         // If nobody joined the game, settle early
         if (game.playersCount == 0) {
@@ -245,7 +245,6 @@ contract GameShow is Ownable {
 
         game.state = GameState.Active;
         game.startTime = startTime;
-        game.questions = _questions;
 
         emit GameStarted(_gameId, startTime, endTime, _questions);
     }

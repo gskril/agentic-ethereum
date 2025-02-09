@@ -31,7 +31,7 @@ async function main() {
     encodedArgs,
     contractName,
     // Generate using create2crunch or similar
-    salt: '0x000000000000000000000000000000000000000045c1a798d0a78f0094544cfa',
+    salt: '0x0000000000000000000000000000000000000000f9cfa2ed649197011c580f54',
   })
 
   console.log(`Deployed ${contractName} to ${address}`)

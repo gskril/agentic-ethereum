@@ -1,7 +1,7 @@
 // This should probably be in a separate "shared" package but this works fine for now
 export const GAMESHOW_CONTRACT = {
-  fromBlock: 21509218n,
-  address: '0x00000000a3A1D9BA654e4c9855093DbF4029A382',
+  fromBlock: 26153906n,
+  address: '0x000000005bcd54E8302F81A7B62f8A8482b935Ed',
   abi: [
     {
       inputs: [
@@ -420,6 +420,11 @@ export const GAMESHOW_CONTRACT = {
           internalType: 'address',
           name: 'winner',
           type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'questionsCount',
+          type: 'uint256',
         },
       ],
       stateMutability: 'view',
