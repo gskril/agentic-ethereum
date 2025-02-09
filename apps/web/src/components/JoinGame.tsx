@@ -1,12 +1,12 @@
 'use client'
 
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit'
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
-import { Users } from 'lucide-react'
 import React, { useEffect } from 'react'
-import { formatEther } from 'viem'
+import { Address, formatEther } from 'viem'
 import {
   useAccount,
+  useEnsName,
   useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -16,10 +16,12 @@ import {
 import { CountdownTimer } from '@/components/CountdownTimer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { useGamePlayers } from '@/hooks/useGamePlayers'
 import { Game } from '@/hooks/useLatestGame'
 import { secondsToTime } from '@/lib/utils'
 
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
+import { Divider } from './ui/divider'
 
 type Props = {
   game: Game
@@ -28,6 +30,8 @@ type Props = {
 
 export function JoinGame({ game, refetch }: Props) {
   const { address } = useAccount()
+  const { openConnectModal } = useConnectModal()
+  const { data: players, refetch: refetchPlayers } = useGamePlayers(game.id)
 
   const alreadyJoined = useReadContract({
     ...GAMESHOW_CONTRACT,
@@ -45,16 +49,17 @@ export function JoinGame({ game, refetch }: Props) {
     args: [game.id],
     value: game.entryFee,
     query: {
-      enabled: !alreadyJoined.data,
+      enabled: alreadyJoined.data === false,
     },
   })
 
   useEffect(() => {
-    if (receipt.data) {
+    if (receipt.isSuccess) {
       refetch()
       alreadyJoined.refetch()
+      refetchPlayers()
     }
-  }, [receipt.data])
+  }, [receipt.isSuccess])
 
   async function handleJoinGame() {
     if (!simulation.data) return alert('Unreachable code')
@@ -62,81 +67,74 @@ export function JoinGame({ game, refetch }: Props) {
   }
 
   const ticketsLeft = Number(game.playersLimit) - Number(game.playersCount)
-  const soldPercentage =
-    (Number(game.playersCount) / Number(game.playersLimit)) * 100
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-50 p-4">
-      <ConnectButton />
-
-      <Card className="w-full max-w-sm bg-white shadow-lg">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+      <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
-          <h1 className="text-center text-2xl font-bold text-zinc-900">
-            {game.title}
-          </h1>
+          <h1 className="text-center text-2xl font-bold">{game.title}</h1>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <CountdownTimer
             targetTime={game.startTime}
             onComplete={refetch}
             showHours={true}
+            leading="Starting in..."
           />
 
+          <Divider />
+
           {/* Game Details */}
-          <div className="mb-8 space-y-4">
-            {/* <div className="flex items-center justify-between text-sm text-zinc-600">
-              <span>Questions</span>
-              <span className="font-medium">{game.questionsCount}</span>
-            </div> */}
-
-            <div className="flex items-center justify-between text-sm text-zinc-600">
-              <span>Duration</span>
-              <span className="font-medium">
-                {secondsToTime(game.duration).hours}h{' '}
+          <div className="flex w-full justify-around">
+            <div className="text-center">
+              <span className="text-primary block text-3xl font-semibold">
                 {secondsToTime(game.duration).minutes}m{' '}
-                {secondsToTime(game.duration).seconds}s
+                {secondsToTime(game.duration).seconds !== 0 &&
+                  secondsToTime(game.duration).seconds + 's'}
               </span>
+              <span className="text-sm">Duration</span>
             </div>
 
-            {/* Ticket Progress */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm text-zinc-600">
-                <div className="flex items-center gap-2">
-                  <Users size={16} />
-                  <span>Available Tickets</span>
-                </div>
-                <span className="font-medium">
-                  {ticketsLeft}/{game.playersLimit}
-                </span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-zinc-100">
-                <div
-                  className="h-2 rounded-full bg-zinc-900 transition-all duration-500"
-                  style={{ width: `${soldPercentage}%` }}
-                ></div>
-              </div>
+            <div className="text-center">
+              <span className="text-primary block text-3xl font-semibold">
+                {formatEther(game.entryFee)} ETH
+              </span>
+              <span className="text-sm">Entry Fee</span>
             </div>
+          </div>
+
+          <Divider />
+
+          {/* Ticket Progress */}
+          <div className="flex flex-col items-center gap-2">
+            {players && (
+              <div className="flex items-center">
+                {players.map((player) => (
+                  <PlayerAvatar key={player} address={player} />
+                ))}
+              </div>
+            )}
+
+            <span className="text-sm font-semibold">
+              {ticketsLeft}/{game.playersLimit} seats available
+            </span>
           </div>
 
           {/* Entry Fee and Button */}
           <div>
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-zinc-600">Entry Fee</span>
-              <span className="text-xl font-medium">
-                {formatEther(game.entryFee)} ETH
-              </span>
-            </div>
+            {!address && <Button onClick={openConnectModal}>Connect</Button>}
 
-            <Button
-              className="w-full bg-zinc-900 py-6 font-medium text-white hover:bg-zinc-800"
-              disabled={!simulation.data || alreadyJoined.data}
-              onClick={handleJoinGame}
-              loading={
-                simulation.isLoading || tx.isPending || receipt.isLoading
-              }
-            >
-              {alreadyJoined.data ? 'Joined' : 'Enter Game'}
-            </Button>
+            {address && (
+              <Button
+                disabled={!simulation.data || alreadyJoined.data}
+                onClick={handleJoinGame}
+                loading={
+                  simulation.isLoading || tx.isPending || receipt.isLoading
+                }
+              >
+                {alreadyJoined.data ? 'Joined' : 'Join Game'}
+              </Button>
+            )}
 
             {simulation.error && (
               <Alert variant="destructive" className="mt-4">
@@ -148,5 +146,17 @@ export function JoinGame({ game, refetch }: Props) {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+function PlayerAvatar({ address }: { address: Address }) {
+  const { data: name } = useEnsName({ address, chainId: 1 })
+
+  return (
+    <img
+      src={`https://ens-api.gregskril.com/avatar/${name ?? 'blah'}?width=64`}
+      className="border-card -mr-2 h-8 w-8 rounded-full border-2"
+      title={name ?? address}
+    />
   )
 }

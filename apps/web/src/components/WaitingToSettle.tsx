@@ -21,12 +21,10 @@ export function WaitingToSettle({ game, refetch }: Props) {
   }, [refetch])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-50 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
       <Card className="w-full max-w-sm bg-white shadow-lg">
         <CardHeader>
-          <h1 className="text-center text-2xl font-bold text-zinc-900">
-            {game.title}
-          </h1>
+          <h1 className="text-center text-2xl font-bold">{game.title}</h1>
         </CardHeader>
         <CardContent>
           <p>Waiting for the agent to settle the game and pick a winner...</p>
