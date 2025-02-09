@@ -3,7 +3,7 @@
 import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit'
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import React, { useEffect } from 'react'
-import { Address, formatEther } from 'viem'
+import { Address, formatEther, zeroAddress } from 'viem'
 import {
   useAccount,
   useEnsName,
@@ -16,10 +16,11 @@ import {
 import { CountdownTimer } from '@/components/CountdownTimer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Game, useGame } from '@/hooks/useGame'
 import { useGamePlayers } from '@/hooks/useGamePlayers'
-import { Game } from '@/hooks/useLatestGame'
 import { secondsToTime } from '@/lib/utils'
 
+import { WinnerCard } from './WinnerChosen'
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { Divider } from './ui/divider'
 
@@ -30,6 +31,7 @@ type Props = {
 
 export function JoinGame({ game, refetch }: Props) {
   const { address } = useAccount()
+  const previousGame = useGame('previous')
   const { openConnectModal } = useConnectModal()
   const { data: players, refetch: refetchPlayers } = useGamePlayers(game.id)
 
@@ -70,6 +72,10 @@ export function JoinGame({ game, refetch }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+      {previousGame.data && previousGame.data.winner !== zeroAddress && (
+        <WinnerCard game={previousGame.data} />
+      )}
+
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
           <h1 className="text-center text-2xl font-bold">{game.title}</h1>

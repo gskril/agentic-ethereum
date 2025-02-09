@@ -1,19 +1,20 @@
 import { useQuery } from '@tanstack/react-query'
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
+import { translateState } from 'agent/src/utils'
 import { usePublicClient } from 'wagmi'
 
 import { chains, wagmiConfig } from '@/lib/web3'
 
-export type Game = NonNullable<ReturnType<typeof useLatestGame>['data']>
+export type Game = NonNullable<ReturnType<typeof useGame>['data']>
 
-export function useLatestGame() {
+export function useGame(opt: 'current' | 'previous') {
   const viemClient = usePublicClient({
     config: wagmiConfig,
     chainId: chains[0].id,
   })
 
   return useQuery({
-    queryKey: ['latestGame'],
+    queryKey: ['game', opt],
     queryFn: async () => {
       const [blockTimestamp, gameCount] = await Promise.all([
         viemClient.getBlock(),
@@ -27,7 +28,7 @@ export function useLatestGame() {
         return null
       }
 
-      const gameId = gameCount - 1n
+      const gameId = opt === 'current' ? gameCount - 1n : gameCount - 2n
 
       const [
         title,
@@ -62,35 +63,4 @@ export function useLatestGame() {
       } as const
     },
   })
-}
-
-function translateState({
-  state,
-  blockTimestamp,
-  startTime,
-  duration,
-}: {
-  state: number
-  blockTimestamp: bigint
-  startTime: bigint
-  duration: bigint
-}) {
-  switch (state) {
-    case 0:
-      return 'empty'
-    case 1:
-      if (blockTimestamp > startTime) {
-        return 'waiting-start'
-      }
-
-      return 'open'
-    case 2:
-      if (blockTimestamp > startTime + duration) {
-        return 'waiting-settle'
-      }
-
-      return 'active'
-    default:
-      return 'settled'
-  }
 }

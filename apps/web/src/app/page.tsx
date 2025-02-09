@@ -8,13 +8,13 @@ import { WaitingToSettle } from '@/components/WaitingToSettle'
 import { WaitingToStart } from '@/components/WaitingToStart'
 import { WinnerChosen } from '@/components/WinnerChosen'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { useLatestGame } from '@/hooks/useLatestGame'
+import { useGame } from '@/hooks/useGame'
 
 const containerClasses =
   'flex h-screen items-center justify-center max-w-sm mx-auto'
 
 export default function Home() {
-  const { data, isLoading, refetch } = useLatestGame()
+  const { data, isLoading, refetch } = useGame('current')
 
   if (isLoading) {
     return (
@@ -55,7 +55,7 @@ export default function Home() {
   }
 
   if (data.state === 'settled') {
-    return <WinnerChosen game={data} />
+    return <WinnerChosen game={data} refetch={refetch} />
   }
 
   return (

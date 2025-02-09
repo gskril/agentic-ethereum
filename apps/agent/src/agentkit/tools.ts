@@ -12,6 +12,7 @@ import { z } from 'zod'
 import { GAMESHOW_CONTRACT } from '../contract.js'
 import { LitAgentWalletProvider } from '../lit/WalletProvider.js'
 import { replaceBigInts } from '../replaceBigInts.js'
+import { translateState } from '../utils.js'
 
 const createGameSchema = z.object({
   title: z.string().describe(`
@@ -38,6 +39,7 @@ const createGameSchema = z.object({
   expectedStartTime: z.number().describe(`
       <description>
         <timeFormat>Unix timestamp (in seconds)</timeFormat>
+        <range>2 - 10 minutes in the future</range>
         <instructions>When this time is reached, questions become visible, and participants can submit answers.</instructions>
       </description>
     `),
@@ -294,38 +296,6 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
     )
   },
 })
-
-// TODO: Share this with /apps/web/hooks/useLatestGame.ts ?
-function translateState({
-  state,
-  blockTimestamp,
-  startTime,
-  duration,
-}: {
-  state: number
-  blockTimestamp: bigint
-  startTime: bigint
-  duration: bigint
-}) {
-  switch (state) {
-    case 0:
-      return 'empty'
-    case 1:
-      if (blockTimestamp > startTime) {
-        return 'waiting-start'
-      }
-
-      return 'open'
-    case 2:
-      if (blockTimestamp > startTime + duration) {
-        return 'waiting-settle'
-      }
-
-      return 'active'
-    default:
-      return 'settled'
-  }
-}
 
 const getResponsesSchema = z.object({
   gameId: z.number().describe('The id of the game to get responses from'),

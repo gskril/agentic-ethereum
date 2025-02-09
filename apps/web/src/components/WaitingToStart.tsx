@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 
 import { Card, CardDescription, CardHeader } from '@/components/ui/card'
-import { Game } from '@/hooks/useLatestGame'
+import { Game } from '@/hooks/useGame'
 
 type Props = {
   game: Game

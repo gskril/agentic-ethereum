@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useContractEvents } from '@/hooks/useContractEvents'
-import { Game } from '@/hooks/useLatestGame'
+import { Game } from '@/hooks/useGame'
 
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { Divider } from './ui/divider'

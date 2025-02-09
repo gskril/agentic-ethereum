@@ -24,6 +24,7 @@
   },
   "exports": {
     "./contract": "./dist/contract.js",
-    "./src/*": "./src/*.ts"
+    "./src/*": "./src/*.ts",
+    "./utils": "./src/utils.ts"
   }
 }
