@@ -6,7 +6,7 @@ import { createReactAgent } from '@langchain/langgraph/prebuilt'
 import { ChatOpenAI } from '@langchain/openai'
 import { Hex, WalletClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { baseSepolia, hardhat } from 'viem/chains'
+import { base, hardhat } from 'viem/chains'
 
 import { LitAgentWalletProvider } from '../lit/WalletProvider.js'
 import {
@@ -24,7 +24,7 @@ export async function initializeAgent() {
 
   let walletClient: WalletClient = createWalletClient({
     account: privateKeyToAccount(process.env.DEPLOYER_KEY as Hex),
-    chain: baseSepolia,
+    chain: base,
     transport: http(process.env.BASE_RPC),
   })
 
