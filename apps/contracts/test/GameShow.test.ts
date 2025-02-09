@@ -179,6 +179,14 @@ describe('Tests', function () {
         account: account2,
       })
     })
+
+    it('should let the owner change the fee', async function () {
+      const { contract } = await loadFixture(deploy)
+      await createGame(contract, account1)
+      expect(await contract.read.fee()).to.equal(1000n)
+      await contract.write.changeFee([2000n], { account: account1 })
+      expect(await contract.read.fee()).to.equal(2000n)
+    })
   })
 
   describe('Negative tests', function () {
@@ -212,6 +220,14 @@ describe('Tests', function () {
       await expect(settleGame(contract, account1)).to.be.rejectedWith(
         `GameNotOver()`
       )
+    })
+
+    it('should prevent non-owners from changing the fee', async function () {
+      const { contract } = await loadFixture(deploy)
+      await createGame(contract, account1)
+      await expect(
+        contract.write.changeFee([2000n], { account: account2 })
+      ).to.be.rejectedWith(`OwnableUnauthorizedAccount("${account2}")`)
     })
   })
 })

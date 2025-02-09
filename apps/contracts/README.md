@@ -4,8 +4,8 @@
 
 | Network      | Address                                    |
 | ------------ | ------------------------------------------ |
-| Base         | 0x000000005bcd54E8302F81A7B62f8A8482b935Ed |
-| Base Sepolia | 0x000000005bcd54E8302F81A7B62f8A8482b935Ed |
+| Base         | 0x00000000B5bec517B9641973230B171E3E859662 |
+| Base Sepolia | 0x00000000B5bec517B9641973230B171E3E859662 |
 
 ## Local Development
 

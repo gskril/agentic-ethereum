@@ -1,7 +1,7 @@
 // This should probably be in a separate "shared" package but this works fine for now
 export const GAMESHOW_CONTRACT = {
-  fromBlock: 26153906n,
-  address: '0x000000005bcd54E8302F81A7B62f8A8482b935Ed',
+  fromBlock: 26156358n,
+  address: '0x00000000B5bec517B9641973230B171E3E859662',
   abi: [
     {
       inputs: [
@@ -115,6 +115,25 @@ export const GAMESHOW_CONTRACT = {
       inputs: [],
       name: 'Unauthorized',
       type: 'error',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'oldFee',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'newFee',
+          type: 'uint256',
+        },
+      ],
+      name: 'FeeChanged',
+      type: 'event',
     },
     {
       anonymous: false,
@@ -283,6 +302,19 @@ export const GAMESHOW_CONTRACT = {
       ],
       name: 'ResponsesSubmitted',
       type: 'event',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '_newFee',
+          type: 'uint256',
+        },
+      ],
+      name: 'changeFee',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
     },
     {
       inputs: [

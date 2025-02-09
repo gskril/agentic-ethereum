@@ -39,13 +39,14 @@ contract GameShow is Ownable {
 
     /// @notice Percentage of a game's total prize pool that is taken as a fee, expressed in basis points.
     /// @dev 1000 = 10%
-    uint256 public fee = 1000;
+    uint256 public fee;
 
     mapping(uint256 => Game) public games;
 
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
+
     event GameCreated(
         uint256 indexed gameId,
         string title,
@@ -72,6 +73,8 @@ contract GameShow is Ownable {
     );
 
     event GameSettled(uint256 indexed gameId, address indexed winner, uint256 prize);
+
+    event FeeChanged(uint256 oldFee, uint256 newFee);
 
     /*//////////////////////////////////////////////////////////////
                                  ERRORS
@@ -141,7 +144,10 @@ contract GameShow is Ownable {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(address _owner) Ownable(_owner) {}
+    constructor(address _owner) Ownable(_owner) {
+        fee = 1000;
+        emit FeeChanged(0, fee);
+    }
 
     /*//////////////////////////////////////////////////////////////
                             PUBLIC FUNCTIONS
@@ -295,5 +301,11 @@ contract GameShow is Ownable {
 
         (bool success, ) = _to.call{value: _value}(_data);
         if (!success) revert FailedToExecute();
+    }
+
+    function changeFee(uint256 _newFee) external onlyOwner {
+        uint256 oldFee = fee;
+        fee = _newFee;
+        emit FeeChanged(oldFee, _newFee);
     }
 }
