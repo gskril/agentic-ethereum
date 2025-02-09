@@ -44,7 +44,8 @@ const createGameSchema = z.object({
 
   duration: z.number().describe(`
       <description>
-        <range>60 - 180 seconds</range>
+        <timeFormat>Seconds</timeFormat>
+        <range>60 - 180</range>
         <instructions>The total time window for submitting encrypted answers. No submissions accepted once it elapses.</instructions>
       </description>
     `),
@@ -162,7 +163,7 @@ const settleGameSchema = z.object({
   winner: z
     .string()
     .refine((val) => isAddress(val))
-    .describe('The winner of the game'),
+    .describe('The Ethereum address of the winner of the game'),
 })
 
 export const settleGame = customActionProvider<LitAgentWalletProvider>({
@@ -222,17 +223,34 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
 
     const gameId = gameCount - 1n
 
-    const filter = await publicClient.createEventFilter({
-      address: GAMESHOW_CONTRACT.address,
-      event: GAMESHOW_CONTRACT.abi['19'],
-      fromBlock: GAMESHOW_CONTRACT.fromBlock,
-      args: {
-        gameId,
-      },
-    })
+    // Max block range is 1000 with DRPC (30 mins on Base)
+    let questionsCount = 0n
+    let fromBlock = block.number - 1000n
+    let toBlock = block.number
 
-    const logs = await publicClient.getFilterLogs({ filter })
-    const { questionsCount } = logs[0].args
+    // Loop until we go back far enough to get the latest game created log
+    while (true) {
+      const filter = await publicClient.createEventFilter({
+        address: GAMESHOW_CONTRACT.address,
+        event: GAMESHOW_CONTRACT.abi['19'],
+        fromBlock,
+        toBlock,
+        args: {
+          gameId,
+        },
+        strict: true,
+      })
+
+      const logs = await publicClient.getFilterLogs({ filter })
+
+      if (logs.length > 0) {
+        questionsCount = logs[0].args.questionsCount
+        break
+      }
+
+      fromBlock -= 1000n
+      toBlock -= 1000n
+    }
 
     const [title, state, , , startTime, duration] =
       await publicClient.readContract({
@@ -308,3 +326,41 @@ function translateState({
       return 'settled'
   }
 }
+
+const getResponsesSchema = z.object({
+  gameId: z.number().describe('The id of the game to get responses from'),
+})
+
+export const getResponses = customActionProvider<LitAgentWalletProvider>({
+  name: 'get_responses',
+  description: 'Get the responses from all players in a game',
+  schema: getResponsesSchema,
+  invoke: async (walletProvider, args: z.infer<typeof getResponsesSchema>) => {
+    const publicClient = walletProvider.publicClient
+    const block = await publicClient.getBlock()
+    const fromBlock = block.number - 1000n
+
+    const filter = await publicClient.createEventFilter({
+      address: GAMESHOW_CONTRACT.address,
+      event: GAMESHOW_CONTRACT.abi['24'],
+      fromBlock,
+      args: {
+        gameId: BigInt(args.gameId),
+      },
+      strict: true,
+    })
+
+    const logs = await publicClient.getFilterLogs({ filter })
+    const allResponses = new Array<{
+      player: `0x${string}`
+      responses: readonly `0x${string}`[]
+    }>()
+
+    for (const log of logs) {
+      const { player, responses } = log.args
+      allResponses.push({ player, responses })
+    }
+
+    return JSON.stringify(allResponses)
+  },
+})

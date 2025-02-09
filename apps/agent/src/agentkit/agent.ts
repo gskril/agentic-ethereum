@@ -11,7 +11,7 @@ const prompt =
   'If there is not an ongoing game (state is "empty" or "settled"), create a new one that starts in 65 seconds from the current unix timestamp.\n' +
   'If the state is "open" or "active" do not do anything.\n' +
   'If the state is "waiting-start", go ahead and start the game.\n' +
-  'If the state is "waiting-settle", go ahead and settle the game.\n' +
+  'If the state is "waiting-settle", gather the responses, judge them based on the game title you created, and pick a winner to settle the game.\n' +
   "Don't do anything outside of these steps."
 
 export async function startAgent({ interval }: RunAgentOptions) {
