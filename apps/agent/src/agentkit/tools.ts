@@ -380,12 +380,16 @@ export const notify = customActionProvider({
       throw new Error(user.error)
     }
 
-    await sendFrameNotification({
+    const res = await sendFrameNotification({
       fid: user.data.fid,
       title: 'Game started',
       body: args.message,
     })
 
-    return `Notified user ${args.address} with the following message: "${args.message}"`
+    if (res.state === 'success') {
+      return `Notified user ${args.address} with the following message: "${args.message}"`
+    } else {
+      return `I couldn't notify user ${args.address} with the following message: "${args.message}"`
+    }
   },
 })

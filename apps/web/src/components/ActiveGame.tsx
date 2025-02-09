@@ -84,7 +84,7 @@ export function ActiveGame({ game, refetch }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 py-6">
-      <ConnectButton chainStatus="none" />
+      <ConnectButton chainStatus="none" showBalance={false} />
 
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
