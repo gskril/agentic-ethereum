@@ -228,7 +228,6 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
     const gameId = gameCount - 1n
 
     // Max block range is 1000 with DRPC (30 mins on Base)
-    let questionsCount = 0n
     let fromBlock = block.number - 1000n
     let toBlock = block.number
     const players = new Array<`0x${string}`>()
@@ -267,7 +266,6 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
       }
 
       if (gameCreatedLogs.length > 0) {
-        questionsCount = gameCreatedLogs[0].args.questionsCount
         break
       }
 
@@ -275,7 +273,7 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
       toBlock -= 1000n
     }
 
-    const [title, state, , , startTime, duration] =
+    const [title, state, , , startTime, duration, , , questionsCount] =
       await publicClient.readContract({
         ...GAMESHOW_CONTRACT,
         functionName: 'games',
