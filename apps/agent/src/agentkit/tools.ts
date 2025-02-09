@@ -38,12 +38,11 @@ const createGameSchema = z.object({
       </description>
     `),
 
-  expectedStartTime: z.number().describe(`
-      <description>
-        <timeFormat>Unix timestamp (in seconds)</timeFormat>
-        <instructions>This must be 10 - 60 minutes in the future. When this time is reached, questions become visible, and participants can submit answers.</instructions>
-      </description>
-    `),
+  expectedStartTime: z
+    .number()
+    .describe(
+      'When this time is reached, questions become visible, and participants can submit answers. It must be 5-10 minutes in the future, formatted in unix timestamp.'
+    ),
 
   duration: z.number().describe(`
       <description>

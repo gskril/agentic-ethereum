@@ -73,7 +73,13 @@ export function JoinGame({ game, refetch }: Props) {
 
   async function handleJoinGame() {
     if (!simulation.data) return alert('Unreachable code')
-    tx.writeContract(simulation.data.request)
+    tx.writeContract({
+      ...GAMESHOW_CONTRACT,
+      functionName: 'joinGame',
+      args: [game.id],
+      value: game.entryFee,
+      chainId: chains[0].id,
+    })
   }
 
   const ticketsLeft = Number(game.playersLimit) - Number(game.playersCount)
