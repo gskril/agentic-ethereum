@@ -12,6 +12,9 @@ import { LitAgentWalletProvider } from '../lit/WalletProvider.js'
 import {
   createGame,
   getCurrentTimestamp,
+  getMostRecentGame,
+  getResponses,
+  notify,
   settleGame,
   startGame,
 } from './tools.js'
@@ -35,7 +38,15 @@ export async function initializeAgent() {
 
   const agentKit = await AgentKit.from({
     walletProvider: new LitAgentWalletProvider(walletClient),
-    actionProviders: [createGame, startGame, settleGame, getCurrentTimestamp],
+    actionProviders: [
+      createGame,
+      startGame,
+      settleGame,
+      getCurrentTimestamp,
+      getMostRecentGame,
+      getResponses,
+      notify,
+    ],
   })
 
   const llm = new ChatOpenAI({

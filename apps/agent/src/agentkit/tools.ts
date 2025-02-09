@@ -10,6 +10,8 @@ import {
 import { z } from 'zod'
 
 import { GAMESHOW_CONTRACT } from '../contract.js'
+import { Neynar } from '../farcaster/neynar.js'
+import { sendFrameNotification } from '../farcaster/notifications.js'
 import { LitAgentWalletProvider } from '../lit/WalletProvider.js'
 import { replaceBigInts } from '../replaceBigInts.js'
 import { translateState } from '../utils.js'
@@ -24,7 +26,7 @@ const createGameSchema = z.object({
 
   entryFee: z.number().describe(`
       <description>
-        <range>0.001 - 0.01 Ether</range>
+        <range>0.0001 - 0.002 Ether</range>
         <instructions>Participants pay this fee to enter. All fees are pooled and awarded to the winner.</instructions>
       </description>
     `),
@@ -39,8 +41,7 @@ const createGameSchema = z.object({
   expectedStartTime: z.number().describe(`
       <description>
         <timeFormat>Unix timestamp (in seconds)</timeFormat>
-        <range>2 - 10 minutes in the future</range>
-        <instructions>When this time is reached, questions become visible, and participants can submit answers.</instructions>
+        <instructions>This must be 10 - 60 minutes in the future. When this time is reached, questions become visible, and participants can submit answers.</instructions>
       </description>
     `),
 
@@ -229,10 +230,11 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
     let questionsCount = 0n
     let fromBlock = block.number - 1000n
     let toBlock = block.number
+    const players = new Array<`0x${string}`>()
 
     // Loop until we go back far enough to get the latest game created log
     while (true) {
-      const filter = await publicClient.createEventFilter({
+      const gameCreatedFilter = await publicClient.createEventFilter({
         address: GAMESHOW_CONTRACT.address,
         event: GAMESHOW_CONTRACT.abi['19'],
         fromBlock,
@@ -243,10 +245,28 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
         strict: true,
       })
 
-      const logs = await publicClient.getFilterLogs({ filter })
+      const gameJoinedFilter = await publicClient.createEventFilter({
+        address: GAMESHOW_CONTRACT.address,
+        event: GAMESHOW_CONTRACT.abi['20'],
+        fromBlock,
+        toBlock,
+        args: { gameId },
+        strict: true,
+      })
 
-      if (logs.length > 0) {
-        questionsCount = logs[0].args.questionsCount
+      const gameCreatedLogs = await publicClient.getFilterLogs({
+        filter: gameCreatedFilter,
+      })
+      const gameJoinedLogs = await publicClient.getFilterLogs({
+        filter: gameJoinedFilter,
+      })
+
+      for (const log of gameJoinedLogs) {
+        players.push(log.args.player)
+      }
+
+      if (gameCreatedLogs.length > 0) {
+        questionsCount = gameCreatedLogs[0].args.questionsCount
         break
       }
 
@@ -290,6 +310,7 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
           startTime,
           endTime: startTime + duration,
           questionsCount,
+          players: players.length > 0 ? players : undefined,
         },
         (x) => x.toString()
       )
@@ -332,5 +353,36 @@ export const getResponses = customActionProvider<LitAgentWalletProvider>({
     }
 
     return JSON.stringify(allResponses)
+  },
+})
+
+const notifySchema = z.object({
+  address: z
+    .string()
+    .refine((val) => isAddress(val))
+    .describe('The Ethereum address of the user to notify'),
+  message: z.string().describe('The message to notify the user with'),
+})
+
+export const notify = customActionProvider({
+  name: 'notify',
+  description: 'Send a notification to a user by their Ethereum address',
+  schema: notifySchema,
+  invoke: async (_, args: z.infer<typeof notifySchema>) => {
+    const neynar = new Neynar(process.env.NEYNAR_API_KEY)
+
+    const user = await neynar.getFarcasterAccountByAddress(args.address)
+
+    if (user.error || !user.data) {
+      throw new Error(user.error)
+    }
+
+    await sendFrameNotification({
+      fid: user.data.fid,
+      title: 'Game started',
+      body: args.message,
+    })
+
+    return `Notified user ${args.address} with the following message: "${args.message}"`
   },
 })

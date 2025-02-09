@@ -1,7 +1,13 @@
 'use client'
 
 import frameSDK, { type Context } from '@farcaster/frame-sdk'
-import { createContext, useContext, useEffect, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
 type FrameContext = Context.FrameContext
 
@@ -46,5 +52,12 @@ export function useFrame() {
   const { context } = useContext(FrameSDKContext)
   const actions = frameSDK.actions
 
-  return { context, actions }
+  const refetch = useCallback(() => {
+    // Reload the page to refetch frame context
+    if (typeof window !== 'undefined') {
+      window.location.reload()
+    }
+  }, [])
+
+  return { context, actions, refetch }
 }

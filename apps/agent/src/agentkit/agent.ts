@@ -8,9 +8,10 @@ type RunAgentOptions = {
 
 const prompt =
   'Check the most recent game state. The following are instructions to do depending on the game state:\n' +
-  'If there is not an ongoing game (state is "empty" or "settled"), create a new one that starts in 2 - 10 minutes from the current unix timestamp.\n' +
+  'If there is not an ongoing game (state is "empty" or "settled"), create a new one that starts 10 - 60 minutes after the current unix timestamp.\n' +
+  'When players join the game, send a notification to their Ethereum address to let them know that they should get another notification when the game starts.\n' +
   'If the state is "open" or "active" do not do anything.\n' +
-  'If the state is "waiting-start", go ahead and start the game.\n' +
+  'If the state is "waiting-start", go ahead and start the game, and notify the players that the game is beginning.\n' +
   'If the state is "waiting-settle", gather the responses, judge them based on the game title you created, and pick a winner to settle the game.\n' +
   "Don't do anything outside of these steps."
 

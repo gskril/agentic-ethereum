@@ -1,5 +1,6 @@
 'use client'
 
+import frameSDK from '@farcaster/frame-sdk'
 import { AlertCircle, Loader2 } from 'lucide-react'
 
 import { ActiveGame } from '@/components/ActiveGame'
@@ -7,7 +8,9 @@ import { JoinGame } from '@/components/JoinGame'
 import { WaitingToSettle } from '@/components/WaitingToSettle'
 import { WaitingToStart } from '@/components/WaitingToStart'
 import { WinnerChosen } from '@/components/WinnerChosen'
+import { useFrame } from '@/components/providers/FrameSDKProvider'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import { useGame } from '@/hooks/useGame'
 
 const containerClasses =
@@ -15,11 +18,27 @@ const containerClasses =
 
 export default function Home() {
   const { data, isLoading, refetch } = useGame('current')
+  const { context, refetch: refetchFrame } = useFrame()
 
   if (isLoading) {
     return (
       <div className={containerClasses}>
         <Loader2 size={32} className="animate-spin" />
+      </div>
+    )
+  }
+
+  if (context && !context.client.added) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+        <Button
+          onClick={async () => {
+            await frameSDK.actions.addFrame()
+            refetchFrame()
+          }}
+        >
+          Add Frame to Play!
+        </Button>
       </div>
     )
   }
