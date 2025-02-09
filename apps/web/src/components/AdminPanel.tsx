@@ -64,7 +64,7 @@ function CreateGameForm({ tx }: { tx: UseWriteContractReturnType }) {
           <Input
             type="number"
             name="entryFee"
-            step="0.001"
+            step="0.0001"
             placeholder="Entry Fee in ETH"
           />
           <Input
