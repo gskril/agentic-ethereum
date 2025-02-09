@@ -1,8 +1,8 @@
 {
   "accountAssociation": {
     "header": "eyJmaWQiOjM0NywidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEI0RjE5NWU5QTk4MkMyYkE1ODk4OENiMjEzMjU1NzM3OGU5RTZiMDgifQ",
-    "payload": "eyJkb21haW4iOiJleGFtcGxlLmNvbSJ9",
-    "signature": "MHhkYzc5NjJmZjhlZjY3YWQwZGJhZjhjODE5NzViZjI3ODVjMzk4NzE3NDlkY2Q5MmE1MmFlZmE4M2Y0OWVjYjkzM2VmZmE3ZGZmMTcyMWI2ZTQ2OGEwMGFhZDEyNmU0ZGI2NGI1YThkY2ZhZmNkNzMwYmNjMjNiYTU1NTA4N2U4NTFi"
+    "payload": "eyJkb21haW4iOiJ0cml2aWEuZ3JlZ3NrcmlsLmNvbSJ9",
+    "signature": "MHg1ZDY4YzQyNmRhN2QwMzE1ZDY4Y2RiMDU3MWM4ZmFjMWM0NzFkZmJlOTMxODZlODNlN2FhZjM4ZjFmOTUwOWU5MzQ4MGMyZTlhNjEwZTIyNmQxOWI2OTk5YjdkODZlODYyYmM0MzNmYjY1MTk2Yjg5MzYxNzI0ZmIzNjViMTNlMzFj"
   },
   "frame": {
     "version": "1",
