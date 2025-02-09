@@ -17,7 +17,7 @@ export function useGamePlayers(gameId: bigint) {
     queryFn: async () => {
       const filter = await viemClient.createEventFilter({
         address: GAMESHOW_CONTRACT.address,
-        event: GAMESHOW_CONTRACT.abi[20],
+        event: GAMESHOW_CONTRACT.abi[21],
         args: {
           gameId,
         },

@@ -236,7 +236,7 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
     while (true) {
       const gameCreatedFilter = await publicClient.createEventFilter({
         address: GAMESHOW_CONTRACT.address,
-        event: GAMESHOW_CONTRACT.abi['19'],
+        event: GAMESHOW_CONTRACT.abi['20'],
         fromBlock,
         toBlock,
         args: {
@@ -247,7 +247,7 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
 
       const gameJoinedFilter = await publicClient.createEventFilter({
         address: GAMESHOW_CONTRACT.address,
-        event: GAMESHOW_CONTRACT.abi['20'],
+        event: GAMESHOW_CONTRACT.abi['21'],
         fromBlock,
         toBlock,
         args: { gameId },
@@ -332,7 +332,7 @@ export const getResponses = customActionProvider<LitAgentWalletProvider>({
 
     const filter = await publicClient.createEventFilter({
       address: GAMESHOW_CONTRACT.address,
-      event: GAMESHOW_CONTRACT.abi['24'],
+      event: GAMESHOW_CONTRACT.abi['25'],
       fromBlock,
       args: {
         gameId: BigInt(args.gameId),
