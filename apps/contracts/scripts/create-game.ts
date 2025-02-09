@@ -1,4 +1,4 @@
-// npx hardhat run scripts/create-game.ts --network baseSepolia
+// npx hardhat run scripts/create-game.ts --network base
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import hre from 'hardhat'
 
@@ -22,7 +22,7 @@ async function main() {
     3n,
     1738785201n,
     180n,
-    3n,
+    1n,
   ])
 
   console.log('Game started', tx)

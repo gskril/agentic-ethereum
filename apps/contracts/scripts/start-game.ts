@@ -1,4 +1,4 @@
-// npx hardhat run scripts/start-game.ts --network baseSepolia
+// npx hardhat run scripts/start-game.ts --network base
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import hre from 'hardhat'
 
@@ -12,14 +12,7 @@ async function main() {
   uint256 _gameId,
   string[] calldata _questions
   */
-  const tx = await contract.write.startGame([
-    0n,
-    [
-      'Is fruit a dessert?',
-      'Is chocolate cake a dessert?',
-      'Is ice cream a dessert?',
-    ],
-  ])
+  const tx = await contract.write.startGame([0n, ['Is fruit a dessert?']]) // (The answer is no)
 
   console.log('Game started', tx)
 }

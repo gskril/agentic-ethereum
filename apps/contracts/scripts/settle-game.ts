@@ -1,4 +1,4 @@
-// npx hardhat run scripts/settle-game.ts --network baseSepolia
+// npx hardhat run scripts/settle-game.ts --network base
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import hre from 'hardhat'
 
