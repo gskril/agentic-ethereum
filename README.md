@@ -23,7 +23,7 @@ Contract
 Webapp
 
 - [x] Screen for joining a game
-  - [ ] Show user profiles as they join
+  - [x] Show user profiles as they join
 - [x] Screen for submitting responses
 - [x] Screen for game ended with the winner
 - [ ] Encrypt player responses with Lit Actions

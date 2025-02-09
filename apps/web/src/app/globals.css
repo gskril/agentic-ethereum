@@ -71,13 +71,14 @@
 @layer utilities {
   .bg-main {
     background-image: linear-gradient(
-        hsl(var(--background) / 0.7),
-        hsl(var(--background) / 0.7)
+        hsl(var(--background) / 0.8),
+        hsl(var(--background) / 0.8)
       ),
       url('/img/background.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    backdrop-filter: blur(8px);
+    /* Adding this blur makes the layout shift a lot when Rainbowkit modals are open for some reason */
+    /* backdrop-filter: blur(8px); */
   }
 }
