@@ -12,6 +12,7 @@
   "dependencies": {
     "@coinbase/agentkit": "^0.1.1",
     "@coinbase/agentkit-langchain": "^0.1.0",
+    "@ensdomains/ensjs": "^4.0.2",
     "@farcaster/frame-sdk": "^0.0.26",
     "@langchain/core": "^0.3.37",
     "@langchain/langgraph": "^0.2.44",
@@ -19,7 +20,6 @@
     "@lit-protocol/constants": "^7.0.4",
     "@lit-protocol/lit-node-client-nodejs": "^7.0.4",
     "@upstash/redis": "^1.34.4",
-    "contracts": "workspace:^",
     "dotenv": "^16.4.7",
     "viem": "^2.22.10",
     "zod": "^3.24.1"

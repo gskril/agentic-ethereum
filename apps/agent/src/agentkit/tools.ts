@@ -1,4 +1,5 @@
 import { customActionProvider } from '@coinbase/agentkit'
+import { bytesToPacket } from '@ensdomains/ensjs/utils'
 import {
   EncodeFunctionDataParameters,
   TransactionReceipt,
@@ -6,6 +7,7 @@ import {
   encodeFunctionData,
   isAddress,
   parseEther,
+  toBytes,
 } from 'viem'
 import { z } from 'zod'
 
@@ -343,12 +345,16 @@ export const getResponses = customActionProvider<LitAgentWalletProvider>({
     const logs = await publicClient.getFilterLogs({ filter })
     const allResponses = new Array<{
       player: `0x${string}`
-      responses: readonly `0x${string}`[]
+      responses: string[]
     }>()
 
     for (const log of logs) {
       const { player, responses } = log.args
-      allResponses.push({ player, responses })
+      const decodedResponses = responses.map((response) =>
+        bytesToPacket(toBytes(response))
+      )
+
+      allResponses.push({ player, responses: decodedResponses })
     }
 
     return JSON.stringify(allResponses)
