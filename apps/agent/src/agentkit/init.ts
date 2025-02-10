@@ -60,6 +60,7 @@ export async function initializeAgent() {
   const memory = new MemorySaver()
   const config: RunnableConfig = {
     configurable: { thread_id: 'memory' },
+    timeout: 15_000,
   }
 
   // Create React Agent using the LLM and CDP AgentKit tools

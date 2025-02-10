@@ -20,6 +20,11 @@ export async function startAgent({ interval }: RunAgentOptions) {
   const { agent, config } = await initializeAgent()
 
   while (true) {
+    await runAgentTask()
+    await new Promise((resolve) => setTimeout(resolve, interval * 1000))
+  }
+
+  async function runAgentTask() {
     try {
       const stream = await agent.stream(
         { messages: [new HumanMessage(prompt)] },
@@ -55,8 +60,6 @@ export async function startAgent({ interval }: RunAgentOptions) {
       }
 
       console.log('-------------------\n')
-
-      await new Promise((resolve) => setTimeout(resolve, interval * 1000))
     } catch (error) {
       if (error instanceof Error) {
         console.error('Error:', error.message)
