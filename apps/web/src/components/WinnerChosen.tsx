@@ -57,7 +57,12 @@ export function WinnerCard({ game, showTitle = true }: Props) {
         )}
         {(() => {
           if (game.winner === zeroAddress) {
-            return <div>No winner</div>
+            return (
+              <span className="text-center">
+                There was no winner for the previous game. A new one will be
+                started in less than a minute!
+              </span>
+            )
           }
 
           return (
