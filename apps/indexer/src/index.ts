@@ -42,7 +42,12 @@ ponder.on('GameShow:ResponsesSubmitted', async ({ event, context }) => {
   let responses = new Array<string>()
 
   try {
-    responses = _responses.map((res) => bytesToString(hexToBytes(res)))
+    // Clean up the responses by removing control characters
+    responses = _responses.map((res) => {
+      const str = bytesToString(hexToBytes(res))
+      // Remove the first byte (length) and the null terminator
+      return str.slice(1).replace(/\x00$/, '')
+    })
   } catch {
     // Old games that encoded responses differently will be empty in the API
   }
