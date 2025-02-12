@@ -3,8 +3,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { GAMESHOW_CONTRACT } from 'agent/src/contract'
 import { Check } from 'lucide-react'
-import { toHex } from 'viem'
-import { packetToBytes } from 'viem/ens'
+import { stringToBytes, toHex } from 'viem'
 import {
   useAccount,
   useReadContract,
@@ -71,7 +70,7 @@ export function ActiveGame({ game, refetch }: Props) {
     const formData = new FormData(event.target as HTMLFormElement)
     const answers = Object.fromEntries(formData.entries())
     const responses = Object.values(answers).map((answer) =>
-      toHex(packetToBytes(answer as string))
+      toHex(stringToBytes(answer as string))
     )
 
     tx.writeContract({
