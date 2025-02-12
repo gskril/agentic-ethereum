@@ -2,7 +2,8 @@
   "name": "monorepo",
   "private": true,
   "scripts": {
-    "prettier": "pnpm --parallel prettier"
+    "prettier": "pnpm --parallel prettier",
+    "start:indexer": "pnpm --filter indexer start"
   },
   "engines": {
     "node": ">=18",
