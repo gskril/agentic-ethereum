@@ -9,6 +9,7 @@ import {
   useEnsName,
   useReadContract,
   useSimulateContract,
+  useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi'
@@ -35,6 +36,7 @@ export function JoinGame({ game, refetch }: Props) {
   const previousGame = useGame('previous')
   const { openConnectModal } = useConnectModal()
   const { data: players, refetch: refetchPlayers } = useGamePlayers(game.id)
+  const { switchChain } = useSwitchChain()
 
   const alreadyJoined = useReadContract({
     ...GAMESHOW_CONTRACT,
@@ -72,6 +74,7 @@ export function JoinGame({ game, refetch }: Props) {
 
   async function handleJoinGame() {
     if (!simulation.data) return alert('Unreachable code')
+    switchChain({ chainId: chains[0].id })
     tx.writeContract({
       ...GAMESHOW_CONTRACT,
       functionName: 'joinGame',
