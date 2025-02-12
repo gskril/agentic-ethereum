@@ -39,7 +39,13 @@ ponder.on('GameShow:GameStarted', async ({ event, context }) => {
 
 ponder.on('GameShow:ResponsesSubmitted', async ({ event, context }) => {
   const { gameId, player, responses: _responses } = event.args
-  const responses = _responses.map((res) => bytesToString(hexToBytes(res)))
+  let responses = new Array<string>()
+
+  try {
+    responses = _responses.map((res) => bytesToString(hexToBytes(res)))
+  } catch {
+    // Old games that encoded responses differently will be empty in the API
+  }
 
   const game = await context.db.find(gameTable, { id: gameId })
   const { questions } = game!
