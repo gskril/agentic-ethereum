@@ -63,12 +63,14 @@ export function JoinGame({ game, previousGame, refetch }: Props) {
     },
   })
 
+  // Call refetch every 5 seconds
   useEffect(() => {
-    if (receipt.isSuccess) {
+    const interval = setInterval(() => {
       refetch()
-      alreadyJoined.refetch()
-    }
-  }, [receipt.isSuccess])
+    }, 5_000)
+
+    return () => clearInterval(interval)
+  }, [refetch])
 
   async function handleJoinGame() {
     if (!simulation.data) return alert('Unreachable code')

@@ -20,7 +20,6 @@ import {
   CardHeader,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { useContractEvents } from '@/hooks/useContractEvents'
 import { Game } from '@/hooks/useGame'
 import { chains } from '@/lib/web3'
 
@@ -30,14 +29,6 @@ import { Divider } from './ui/divider'
 type Props = {
   game: Game
   refetch: () => void
-}
-
-// This could be removed if inference was improved in `useContractEvents`
-type GameStartedEvent = {
-  endTime: bigint
-  gameId: bigint
-  questions: string[]
-  startTime: bigint
 }
 
 export function ActiveGame({ game, refetch }: Props) {
@@ -51,13 +42,6 @@ export function ActiveGame({ game, refetch }: Props) {
     enabled: !!address,
     chainId: chains[0].id,
   })
-
-  const gameStartedEvents = useContractEvents({
-    eventName: 'GameStarted',
-    queryKey: ['questions', game.id],
-  })
-
-  const gameStartedEvent = gameStartedEvents.data?.[0]?.args as GameStartedEvent
 
   const tx = useWriteContract()
   const receipt = useWaitForTransactionReceipt({
@@ -105,23 +89,21 @@ export function ActiveGame({ game, refetch }: Props) {
           <form onSubmit={handleSubmitAnswers}>
             {/* Questions */}
             <div className="mb-4 space-y-4">
-              {gameStartedEvent?.questions.map(
-                (question: string, index: number) => (
-                  <div key={index} className="space-y-1">
-                    <label
-                      className="block text-sm font-medium text-zinc-700"
-                      htmlFor={`question-${index}`}
-                    >
-                      {question}
-                    </label>
-                    <Input
-                      placeholder="Enter your answer"
-                      name={`question-${index}`}
-                      id={`question-${index}`}
-                    />
-                  </div>
-                )
-              )}
+              {game.questions?.map((question: string, index: number) => (
+                <div key={index} className="space-y-1">
+                  <label
+                    className="block text-sm font-medium text-zinc-700"
+                    htmlFor={`question-${index}`}
+                  >
+                    {question}
+                  </label>
+                  <Input
+                    placeholder="Enter your answer"
+                    name={`question-${index}`}
+                    id={`question-${index}`}
+                  />
+                </div>
+              ))}
             </div>
 
             {/* Submit Button */}
