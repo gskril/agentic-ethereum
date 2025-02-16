@@ -12,6 +12,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@ponder/utils": "^0.2.3",
     "agent": "workspace:^",
     "hono": "^4.5.0",
     "ponder": "^0.9.6",
@@ -27,7 +28,6 @@
     "node": ">=18.14"
   },
   "exports": {
-    "./contracts": "./contracts/index.ts"
-  },
-  "types": "./contracts/index.ts"
+    "./schema": "./ponder.schema.ts"
+  }
 }

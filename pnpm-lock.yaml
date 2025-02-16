@@ -114,6 +114,9 @@ importers:
 
   apps/indexer:
     dependencies:
+      '@ponder/utils':
+        specifier: ^0.2.3
+        version: 0.2.3(typescript@5.5.4)(viem@2.22.21(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1))
       agent:
         specifier: workspace:^
         version: link:../agent
@@ -151,6 +154,9 @@ importers:
       '@farcaster/frame-wagmi-connector':
         specifier: ^0.0.14
         version: 0.0.14(@farcaster/frame-sdk@0.0.26(typescript@5.5.4)(zod@3.24.1))(@wagmi/core@2.16.3(@tanstack/query-core@5.64.2)(@types/react@19.0.7)(immer@10.0.2)(react@19.0.0)(typescript@5.5.4)(use-sync-external-store@1.4.0(react@19.0.0))(viem@2.22.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1)))(viem@2.22.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1))
+      '@ponder/utils':
+        specifier: ^0.2.3
+        version: 0.2.3(typescript@5.5.4)(viem@2.22.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1))
       '@radix-ui/react-slot':
         specifier: ^1.1.1
         version: 1.1.1(@types/react@19.0.7)(react@19.0.0)
@@ -172,6 +178,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      indexer:
+        specifier: workspace:^
+        version: link:../indexer
       lucide-react:
         specifier: ^0.474.0
         version: 0.474.0(react@19.0.0)
@@ -8208,6 +8217,12 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@ponder/utils@0.2.3(typescript@5.5.4)(viem@2.22.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1))':
+    dependencies:
+      viem: 2.22.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1)
+    optionalDependencies:
+      typescript: 5.5.4
+
   '@ponder/utils@0.2.3(typescript@5.5.4)(viem@2.22.21(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1))':
     dependencies:
       viem: 2.22.21(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.24.1)
@@ -10833,7 +10848,7 @@ snapshots:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.7
+      micromatch: 4.0.8
 
   fast-json-stable-stringify@2.1.0: {}
 
