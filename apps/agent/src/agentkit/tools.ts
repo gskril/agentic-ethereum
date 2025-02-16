@@ -105,6 +105,12 @@ export const createGame = customActionProvider<LitAgentWalletProvider>({
       (log) => log.eventName === 'GameCreated'
     )
 
+    // Sleep until `args.expectedStartTime`
+    console.log('Sleeping until', args.expectedStartTime)
+    await new Promise((resolve) =>
+      setTimeout(resolve, (args.expectedStartTime - Date.now() / 1000) * 1000)
+    )
+
     return `A new game titled "${args.title}" has been created with ID ${gameCreatedLog?.args.gameId}. The game will start at ${args.expectedStartTime}. Until that time, there's nothing to do.`
   },
 })
