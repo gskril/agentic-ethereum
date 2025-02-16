@@ -65,6 +65,11 @@ export const createGame = customActionProvider<LitAgentWalletProvider>({
   description: 'Create a new game show',
   schema: createGameSchema,
   invoke: async (walletProvider, args: z.infer<typeof createGameSchema>) => {
+    // Enforce that the next game is started within 1 hour
+    if (args.expectedStartTime > Date.now() / 1000 + 1 * 60 * 60) {
+      throw new Error('Expected start time is too far in the future')
+    }
+
     const viemCall = {
       ...GAMESHOW_CONTRACT,
       functionName: 'createGame',

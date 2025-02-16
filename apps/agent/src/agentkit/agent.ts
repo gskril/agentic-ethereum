@@ -8,7 +8,7 @@ type RunAgentOptions = {
 
 const prompt =
   'Check the most recent game state. The following are instructions to do depending on the game state and time:\n' +
-  'If there is not an ongoing game (state is "empty" or "settled"), create a new one. The title should be unique, engaging, and different from the past game titles. The `expectedStartTime` should be the current unix timestamp + (5-10 minutes in seconds).\n' +
+  'If there is not an ongoing game (state is "empty" or "settled"), get the past game titles and then create a new one. The title should be unique, engaging, and different from the past game titles. The `expectedStartTime` should be the current unix timestamp + (5-10 minutes in seconds).\n' +
   'If you get a `CannotCreateGame()` error, try increasing the `expectedStartTime` by 300 seconds and try again.\n' +
   'When players join the game, send a notification to their Ethereum address to let them know that they should get another notification when the game starts.\n' +
   'If the state is "open" or "active" do not do anything.\n' +
@@ -63,7 +63,7 @@ export async function startAgent({ interval }: RunAgentOptions) {
       console.log('-------------------\n')
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Error:', error.message)
+        console.error('Error:', error)
       }
       process.exit(1)
     }
