@@ -8,7 +8,7 @@ ponder.on('GameShow:GameCreated', async ({ event, context }) => {
   await context.db.insert(gameTable).values({
     ...event.args,
     id: gameId,
-    state: 0n,
+    state: 1n,
     startTime: expectedStartTime,
     endTime: expectedStartTime + duration,
     playersCount: 0n,
@@ -34,6 +34,7 @@ ponder.on('GameShow:GameStarted', async ({ event, context }) => {
   await context.db.update(gameTable, { id: gameId }).set({
     ...event.args,
     questions: questions as string[],
+    state: 2n,
   })
 })
 
@@ -76,5 +77,8 @@ ponder.on('GameShow:GameSettled', async ({ event, context }) => {
     .update(gameTable, {
       id: gameId,
     })
-    .set(event.args)
+    .set({
+      ...event.args,
+      state: 3n,
+    })
 })
