@@ -62,4 +62,17 @@ app.get('/responses/:gameId', async (c) => {
   return c.json({ questions, responses })
 })
 
+app.get('/titles', async (c) => {
+  const res = await db.query.game.findMany({
+    columns: {
+      title: true,
+    },
+    orderBy: (game, { desc }) => [desc(game.id)],
+    limit: 50,
+  })
+
+  const titles = res.map((r) => r.title)
+  return c.json({ pastTitles: titles })
+})
+
 export default app

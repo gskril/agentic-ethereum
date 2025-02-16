@@ -227,7 +227,7 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
   name: 'get_most_recent_game',
   description: 'Get the most recent game',
   schema: z.object({}),
-  invoke: async (walletProvider, _) => {
+  invoke: async () => {
     const res = await fetch(INDEXER_URL + 'games')
 
     if (!res.ok) {
@@ -290,5 +290,20 @@ export const notify = customActionProvider({
     } else {
       return `I couldn't notify user ${args.address} with the following message: "${args.message}"`
     }
+  },
+})
+
+export const getPastTitles = customActionProvider({
+  name: 'get_past_titles',
+  description: 'Get the past titles of games',
+  schema: z.object({}),
+  invoke: async () => {
+    const res = await fetch(INDEXER_URL + 'titles')
+
+    if (!res.ok) {
+      throw new Error('Failed to fetch past titles')
+    }
+
+    return await res.json()
   },
 })
