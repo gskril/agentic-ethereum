@@ -20,8 +20,6 @@ app.get('/games', async (c) => {
     limit: 2,
   })
 
-  const responses = await db.query.response.
-
   const client = createPublicClient(ponderConfig.networks.base)
   const block = await client.getBlock()
 
