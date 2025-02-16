@@ -11,13 +11,14 @@ import { WinnerChosen } from '@/components/WinnerChosen'
 import { useFrame } from '@/components/providers/FrameSDKProvider'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { useGame } from '@/hooks/useGame'
+import { useGames } from '@/hooks/useGame'
 
 const containerClasses =
   'flex h-screen items-center justify-center max-w-sm mx-auto'
 
 export default function Home() {
-  const { data, isLoading, refetch } = useGame('current')
+  // Returns the latest 2 games
+  const { data, isLoading, refetch } = useGames()
   const { context, refetch: refetchFrame } = useFrame()
 
   if (isLoading) {
@@ -28,6 +29,7 @@ export default function Home() {
     )
   }
 
+  // Farcaster frame
   if (context && !context.client.added) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 py-6">
@@ -57,24 +59,24 @@ export default function Home() {
     )
   }
 
-  if (data.state === 'open') {
-    return <JoinGame game={data} refetch={refetch} />
+  if (data[0].state === 'open') {
+    return <JoinGame game={data[0]} previousGame={data[1]} refetch={refetch} />
   }
 
-  if (data.state === 'waiting-start') {
-    return <WaitingToStart game={data} refetch={refetch} />
+  if (data[0].state === 'waiting-start') {
+    return <WaitingToStart game={data[0]} refetch={refetch} />
   }
 
-  if (data.state === 'active') {
-    return <ActiveGame game={data} refetch={refetch} />
+  if (data[0].state === 'active') {
+    return <ActiveGame game={data[0]} refetch={refetch} />
   }
 
-  if (data.state === 'waiting-settle') {
-    return <WaitingToSettle game={data} refetch={refetch} />
+  if (data[0].state === 'waiting-settle') {
+    return <WaitingToSettle game={data[0]} refetch={refetch} />
   }
 
-  if (data.state === 'settled') {
-    return <WinnerChosen game={data} refetch={refetch} />
+  if (data[0].state === 'settled') {
+    return <WinnerChosen game={data[0]} refetch={refetch} />
   }
 
   return (

@@ -17,7 +17,7 @@ import {
 import { CountdownTimer } from '@/components/CountdownTimer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Game, useGame } from '@/hooks/useGame'
+import { Game } from '@/hooks/useGame'
 import { useGamePlayers } from '@/hooks/useGamePlayers'
 import { secondsToTime } from '@/lib/utils'
 import { chains } from '@/lib/web3'
@@ -28,12 +28,12 @@ import { Divider } from './ui/divider'
 
 type Props = {
   game: Game
+  previousGame: Game | undefined
   refetch: () => void
 }
 
-export function JoinGame({ game, refetch }: Props) {
+export function JoinGame({ game, previousGame, refetch }: Props) {
   const { address } = useAccount()
-  const previousGame = useGame('previous')
   const { openConnectModal } = useConnectModal()
   const { data: players, refetch: refetchPlayers } = useGamePlayers(game.id)
   const { switchChain } = useSwitchChain()
@@ -164,8 +164,8 @@ export function JoinGame({ game, refetch }: Props) {
         </CardContent>
       </Card>
 
-      {previousGame.data && previousGame.data.winner !== zeroAddress && (
-        <WinnerCard game={previousGame.data} />
+      {previousGame && previousGame.winner !== zeroAddress && (
+        <WinnerCard game={previousGame} />
       )}
     </div>
   )

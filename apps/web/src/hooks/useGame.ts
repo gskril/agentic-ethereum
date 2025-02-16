@@ -1,66 +1,33 @@
+import type { ReplaceBigInts } from '@ponder/utils'
 import { useQuery } from '@tanstack/react-query'
-import { GAMESHOW_CONTRACT } from 'agent/src/contract'
-import { translateState } from 'agent/src/utils'
-import { usePublicClient } from 'wagmi'
+import * as schema from 'indexer/schema'
 
-import { chains, wagmiConfig } from '@/lib/web3'
+export type Game = NonNullable<ReturnType<typeof useGames>['data']>[number]
 
-export type Game = NonNullable<ReturnType<typeof useGame>['data']>
+const INDEXER_URL = new URL(process.env.NEXT_PUBLIC_INDEXER_URL as string)
 
-export function useGame(opt: 'current' | 'previous') {
-  const viemClient = usePublicClient({
-    config: wagmiConfig,
-    chainId: chains[0].id,
-  })
-
+export function useGames() {
   return useQuery({
-    queryKey: ['game', opt],
+    queryKey: ['games'],
     queryFn: async () => {
-      const [blockTimestamp, gameCount] = await Promise.all([
-        viemClient.getBlock(),
-        viemClient.readContract({
-          ...GAMESHOW_CONTRACT,
-          functionName: 'gameCount',
-        }),
-      ])
+      const res = await fetch(INDEXER_URL + 'games')
+      const json = (await res.json()) as ReplaceBigInts<
+        typeof schema.game.$inferSelect,
+        string
+      >[]
 
-      if (gameCount === 0n) {
-        return null
-      }
-
-      const gameId = opt === 'current' ? gameCount - 1n : gameCount - 2n
-
-      const [
-        title,
-        state,
-        entryFee,
-        playersLimit,
-        startTime,
-        duration,
-        playersCount,
-        winner,
-      ] = await viemClient.readContract({
-        ...GAMESHOW_CONTRACT,
-        functionName: 'games',
-        args: [gameId],
-      })
-
-      return {
-        id: gameId,
-        title,
-        state: translateState({
-          state,
-          blockTimestamp: blockTimestamp.timestamp,
-          startTime,
-          duration,
-        }),
-        entryFee,
-        playersLimit,
-        startTime,
-        duration,
-        playersCount,
-        winner,
-      } as const
+      return json.map((game) => ({
+        ...game,
+        id: BigInt(game.id),
+        entryFee: BigInt(game.entryFee),
+        playersLimit: BigInt(game.playersLimit),
+        startTime: BigInt(game.startTime),
+        duration: BigInt(game.duration),
+        endTime: BigInt(game.endTime),
+        playersCount: BigInt(game.playersCount),
+        questionsCount: BigInt(game.questionsCount),
+        prize: BigInt(game.prize),
+      }))
     },
   })
 }

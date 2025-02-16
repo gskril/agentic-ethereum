@@ -11,11 +11,11 @@ type Props = {
 }
 
 export function WaitingToStart({ game, refetch }: Props) {
-  // Call refetch every 10 seconds
+  // Call refetch every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       refetch()
-    }, 10_000)
+    }, 5_000)
 
     return () => clearInterval(interval)
   }, [refetch])
