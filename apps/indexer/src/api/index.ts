@@ -33,7 +33,18 @@ app.get('/games', async (c) => {
     }),
   }))
 
-  return c.json(replaceBigInts(data, (x) => x.toString()))
+  // Remove null properties
+  const filteredData = data.map((game) => {
+    const obj: Record<string, any> = {}
+    for (const key in game) {
+      if (game[key as keyof typeof game] !== null) {
+        obj[key] = game[key as keyof typeof game]
+      }
+    }
+    return obj
+  })
+
+  return c.json(replaceBigInts(filteredData, (x) => x.toString()))
 })
 
 app.get('/responses/:gameId', async (c) => {

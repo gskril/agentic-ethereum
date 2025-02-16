@@ -148,6 +148,15 @@ export const startGame = customActionProvider<LitAgentWalletProvider>({
       })
     )
 
+    // If nobody joined the game, it's settled at this point
+    const gameSettledLog = decodedLogs.find(
+      (log) => log.eventName === 'GameSettled'
+    )
+
+    if (gameSettledLog) {
+      return `Game ${args.gameId} has been settled early because nobody joined.`
+    }
+
     const gameStartedLog = decodedLogs.find(
       (log) => log.eventName === 'GameStarted'
     )
