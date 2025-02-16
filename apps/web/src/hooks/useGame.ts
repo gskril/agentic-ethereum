@@ -26,7 +26,7 @@ export function useGames() {
         endTime: BigInt(game.endTime),
         playersCount: BigInt(game.playersCount),
         questionsCount: BigInt(game.questionsCount),
-        prize: BigInt(game.prize),
+        prize: BigInt(game.prize ?? 0),
       }))
     },
   })
