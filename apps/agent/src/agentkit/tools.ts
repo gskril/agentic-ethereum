@@ -1,5 +1,4 @@
 import { customActionProvider } from '@coinbase/agentkit'
-import { bytesToPacket } from '@ensdomains/ensjs/utils'
 import {
   EncodeFunctionDataParameters,
   TransactionReceipt,
@@ -7,7 +6,6 @@ import {
   encodeFunctionData,
   isAddress,
   parseEther,
-  toBytes,
 } from 'viem'
 import { z } from 'zod'
 
@@ -15,8 +13,8 @@ import { GAMESHOW_CONTRACT } from '../contract.js'
 import { Neynar } from '../farcaster/neynar.js'
 import { sendFrameNotification } from '../farcaster/notifications.js'
 import { LitAgentWalletProvider } from '../lit/WalletProvider.js'
-import { replaceBigInts } from '../replaceBigInts.js'
-import { translateState } from '../utils.js'
+
+const INDEXER_URL = new URL(process.env.INDEXER_URL as string)
 
 const createGameSchema = z.object({
   title: z.string().describe(`
@@ -215,105 +213,13 @@ export const getMostRecentGame = customActionProvider<LitAgentWalletProvider>({
   description: 'Get the most recent game',
   schema: z.object({}),
   invoke: async (walletProvider, _) => {
-    const publicClient = walletProvider.publicClient
+    const res = await fetch(INDEXER_URL + 'games')
 
-    const [block, gameCount] = await Promise.all([
-      publicClient.getBlock(),
-      publicClient.readContract({
-        ...GAMESHOW_CONTRACT,
-        functionName: 'gameCount',
-      }),
-    ])
-
-    const gameId = gameCount - 1n
-
-    // Max block range is 1000 with DRPC (30 mins on Base)
-    let fromBlock = block.number - 1000n
-    let toBlock = block.number
-    const players = new Array<`0x${string}`>()
-
-    // Loop until we go back far enough to get the latest game created log
-    while (true) {
-      const gameCreatedFilter = await publicClient.createEventFilter({
-        address: GAMESHOW_CONTRACT.address,
-        event: GAMESHOW_CONTRACT.abi['20'],
-        fromBlock,
-        toBlock,
-        args: {
-          gameId,
-        },
-        strict: true,
-      })
-
-      const gameJoinedFilter = await publicClient.createEventFilter({
-        address: GAMESHOW_CONTRACT.address,
-        event: GAMESHOW_CONTRACT.abi['21'],
-        fromBlock,
-        toBlock,
-        args: { gameId },
-        strict: true,
-      })
-
-      const gameCreatedLogs = await publicClient.getFilterLogs({
-        filter: gameCreatedFilter,
-      })
-      const gameJoinedLogs = await publicClient.getFilterLogs({
-        filter: gameJoinedFilter,
-      })
-
-      for (const log of gameJoinedLogs) {
-        players.push(log.args.player)
-      }
-
-      if (gameCreatedLogs.length > 0) {
-        break
-      }
-
-      fromBlock -= 1000n
-      toBlock -= 1000n
+    if (!res.ok) {
+      throw new Error('Failed to fetch most recent game')
     }
 
-    const [title, state, , , startTime, duration, , , questionsCount] =
-      await publicClient.readContract({
-        ...GAMESHOW_CONTRACT,
-        functionName: 'games',
-        args: [gameId],
-      })
-
-    const enrichedState = translateState({
-      state,
-      blockTimestamp: block.timestamp,
-      startTime,
-      duration,
-    })
-
-    // Return less data if the game is settled not to confuse the LLM, and it doesn't influence the next game
-    if (enrichedState === 'settled') {
-      return JSON.stringify(
-        replaceBigInts(
-          {
-            gameId,
-            state: enrichedState,
-          },
-          (x) => x.toString()
-        )
-      )
-    }
-
-    return JSON.stringify(
-      replaceBigInts(
-        {
-          gameId,
-          title,
-          state: enrichedState,
-          startTime,
-          endTime: startTime + duration,
-          questionsCount,
-          players: players.length > 0 ? players : undefined,
-        },
-        (x) => x.toString()
-      )
-    )
+    return (await res.json())[0]
   },
 })
 
@@ -326,67 +232,14 @@ export const getResponses = customActionProvider<LitAgentWalletProvider>({
   description:
     "Get the responses from all players in a game, alongside a reminder of the game's questions",
   schema: getResponsesSchema,
-  invoke: async (walletProvider, args: z.infer<typeof getResponsesSchema>) => {
-    const publicClient = walletProvider.publicClient
-    const block = await publicClient.getBlock()
-    const questions = new Array<string>()
-    let fromBlock = block.number - 1000n
-    let toBlock = block.number
+  invoke: async (_, args: z.infer<typeof getResponsesSchema>) => {
+    const res = await fetch(INDEXER_URL + `responses/${args.gameId}`)
 
-    while (true) {
-      const gameStartedFilter = await publicClient.createEventFilter({
-        address: GAMESHOW_CONTRACT.address,
-        event: GAMESHOW_CONTRACT.abi['23'],
-        fromBlock,
-        toBlock,
-        args: {
-          gameId: BigInt(args.gameId),
-        },
-        strict: true,
-      })
-
-      const gameStartedLogs = await publicClient.getFilterLogs({
-        filter: gameStartedFilter,
-      })
-
-      if (gameStartedLogs.length > 0) {
-        questions.push(...gameStartedLogs[0].args.questions)
-        break
-      }
-
-      fromBlock -= 1000n
-      toBlock -= 1000n
+    if (!res.ok) {
+      throw new Error('Failed to fetch responses')
     }
 
-    const filter = await publicClient.createEventFilter({
-      address: GAMESHOW_CONTRACT.address,
-      event: GAMESHOW_CONTRACT.abi['25'],
-      fromBlock,
-      args: {
-        gameId: BigInt(args.gameId),
-      },
-      strict: true,
-    })
-
-    const logs = await publicClient.getFilterLogs({ filter })
-    const allResponses = new Array<{
-      player: `0x${string}`
-      responses: string[]
-    }>()
-
-    for (const log of logs) {
-      const { player, responses } = log.args
-      const decodedResponses = responses.map((response) =>
-        bytesToPacket(toBytes(response))
-      )
-
-      allResponses.push({ player, responses: decodedResponses })
-    }
-
-    return JSON.stringify({
-      questions,
-      responses: allResponses,
-    })
+    return await res.json()
   },
 })
 

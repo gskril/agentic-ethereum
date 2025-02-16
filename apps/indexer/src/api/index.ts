@@ -1,5 +1,4 @@
 import { replaceBigInts } from '@ponder/utils'
-import { translateState } from 'agent/src/utils'
 import { Hono } from 'hono'
 import { client, eq, graphql } from 'ponder'
 import { db } from 'ponder:api'
@@ -7,6 +6,7 @@ import schema from 'ponder:schema'
 import { createPublicClient } from 'viem'
 
 import ponderConfig from '../../ponder.config'
+import { translateState } from '../utils'
 
 const app = new Hono()
 
@@ -34,6 +34,21 @@ app.get('/games', async (c) => {
   }))
 
   return c.json(replaceBigInts(data, (x) => x.toString()))
+})
+
+app.get('/responses/:gameId', async (c) => {
+  const { gameId } = c.req.param()
+  const res = await db.query.response.findMany({
+    where: eq(schema.response.gameId, BigInt(gameId)),
+  })
+
+  const questions = res[0]?.questions
+  const responses = res.map((r) => ({
+    player: r.player,
+    responses: r.responses,
+  }))
+
+  return c.json({ questions, responses })
 })
 
 export default app

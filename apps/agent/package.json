@@ -12,7 +12,6 @@
   "dependencies": {
     "@coinbase/agentkit": "^0.1.1",
     "@coinbase/agentkit-langchain": "^0.1.0",
-    "@ensdomains/ensjs": "^4.0.2",
     "@farcaster/frame-sdk": "^0.0.26",
     "@langchain/core": "^0.3.37",
     "@langchain/langgraph": "^0.2.44",
