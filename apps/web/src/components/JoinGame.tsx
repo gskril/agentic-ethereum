@@ -35,7 +35,6 @@ type Props = {
 export function JoinGame({ game, previousGame, refetch }: Props) {
   const { address } = useAccount()
   const { openConnectModal } = useConnectModal()
-  const { data: players, refetch: refetchPlayers } = useGamePlayers(game.id)
   const { switchChain } = useSwitchChain()
 
   const alreadyJoined = useReadContract({
@@ -68,7 +67,6 @@ export function JoinGame({ game, previousGame, refetch }: Props) {
     if (receipt.isSuccess) {
       refetch()
       alreadyJoined.refetch()
-      refetchPlayers()
     }
   }, [receipt.isSuccess])
 
@@ -125,9 +123,9 @@ export function JoinGame({ game, previousGame, refetch }: Props) {
 
           {/* Ticket Progress */}
           <div className="flex flex-col items-center gap-2">
-            {players && (
+            {game.players && (
               <div className="flex items-center">
-                {players.map((player) => (
+                {game.players.map((player) => (
                   <PlayerAvatar key={player} address={player} />
                 ))}
               </div>
