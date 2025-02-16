@@ -33,7 +33,7 @@ export function WinnerChosen({ game, showTitle = false, refetch }: Props) {
 
 export function WinnerCard({ game, showTitle = true }: Props) {
   const { data: name } = useEnsName({
-    address: game.winner,
+    address: game.winner!,
     chainId: 1,
     query: {
       enabled: game.winner !== zeroAddress,
@@ -75,7 +75,7 @@ export function WinnerCard({ game, showTitle = true }: Props) {
               )}
 
               <span className="text-xl font-bold">
-                {name ?? truncateAddress(game.winner)}
+                {name ?? truncateAddress(game.winner!)}
               </span>
 
               <span>won</span>
