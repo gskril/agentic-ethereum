@@ -24,12 +24,12 @@ const createGameSchema = z.object({
     </description>
   `),
 
-  entryFee: z.number().describe(`
-      <description>
-        <range>0.0001 - 0.002 Ether</range>
-        <instructions>Participants pay this fee to enter. All fees are pooled and awarded to the winner.</instructions>
-      </description>
-    `),
+  // entryFee: z.number().describe(`
+  //     <description>
+  //       <range>0.0001 - 0.002 Ether</range>
+  //       <instructions>Participants pay this fee to enter. All fees are pooled and awarded to the winner.</instructions>
+  //     </description>
+  //   `),
 
   playersLimit: z.number().describe(`
       <description>
@@ -70,7 +70,7 @@ export const createGame = customActionProvider<LitAgentWalletProvider>({
       functionName: 'createGame',
       args: [
         args.title,
-        parseEther(args.entryFee.toString()),
+        parseEther('0.001'),
         BigInt(args.playersLimit),
         BigInt(args.expectedStartTime),
         BigInt(args.duration),
@@ -295,7 +295,7 @@ export const notify = customActionProvider({
 
 export const getPastTitles = customActionProvider({
   name: 'get_past_titles',
-  description: 'Get the past titles of games',
+  description: 'Get the past game titles',
   schema: z.object({}),
   invoke: async () => {
     const res = await fetch(INDEXER_URL + 'titles')
