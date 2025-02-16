@@ -12,10 +12,6 @@ ponder.on('GameShow:GameCreated', async ({ event, context }) => {
     startTime: expectedStartTime,
     endTime: expectedStartTime + duration,
     playersCount: 0n,
-    questions: [],
-    winner: zeroAddress,
-    players: [],
-    prize: 0n,
   })
 })
 
@@ -24,7 +20,7 @@ ponder.on('GameShow:GameJoined', async ({ event, context }) => {
 
   await context.db.update(gameTable, { id: gameId }).set((row) => ({
     playersCount: row.playersCount + 1n,
-    players: [...row.players, event.args.player],
+    players: [...(row.players ?? []), event.args.player],
   }))
 })
 
@@ -54,7 +50,14 @@ ponder.on('GameShow:ResponsesSubmitted', async ({ event, context }) => {
   }
 
   const game = await context.db.find(gameTable, { id: gameId })
-  const { questions } = game!
+
+  if (!game?.questions) {
+    throw new Error(
+      'Somehow responses were submitted to a game that has no questions'
+    )
+  }
+
+  const { questions } = game
 
   await context.db
     .insert(responseTable)

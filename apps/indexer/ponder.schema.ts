@@ -10,11 +10,11 @@ export const game = onchainTable('game', (t) => ({
   duration: t.bigint().notNull(),
   endTime: t.bigint().notNull(),
   playersCount: t.bigint().notNull(),
-  questions: t.text().array().notNull(),
-  winner: t.hex().notNull(),
   questionsCount: t.bigint().notNull(),
-  players: t.hex().array().notNull(),
-  prize: t.bigint().notNull(),
+  questions: t.text().array(),
+  winner: t.hex(),
+  players: t.hex().array(),
+  prize: t.bigint(),
 }))
 
 export const response = onchainTable('response', (t) => ({
