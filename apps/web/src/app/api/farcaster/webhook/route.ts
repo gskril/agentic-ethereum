@@ -52,16 +52,9 @@ export async function POST(request: NextRequest) {
     case 'frame_added':
       if (event.notificationDetails) {
         await setUserNotificationDetails(fid, event.notificationDetails)
-        await sendFrameNotification({
-          fid,
-          title: 'Welcome to Frames v2',
-          body: 'Frame is now added to your client',
-        })
       } else {
         await deleteUserNotificationDetails(fid)
       }
-
-      break
     case 'frame_removed':
       await deleteUserNotificationDetails(fid)
 
@@ -70,8 +63,8 @@ export async function POST(request: NextRequest) {
       await setUserNotificationDetails(fid, event.notificationDetails)
       await sendFrameNotification({
         fid,
-        title: 'Ding ding ding',
-        body: 'Notifications are now enabled',
+        title: 'Onchain Trivia',
+        body: "You'll be notified about games you've joined.",
       })
 
       break
