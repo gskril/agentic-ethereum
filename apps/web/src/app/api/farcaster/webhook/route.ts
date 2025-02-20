@@ -52,9 +52,16 @@ export async function POST(request: NextRequest) {
     case 'frame_added':
       if (event.notificationDetails) {
         await setUserNotificationDetails(fid, event.notificationDetails)
+        await sendFrameNotification({
+          fid,
+          title: 'Onchain Trivia',
+          body: "You'll be notified about games you've joined.",
+        })
       } else {
         await deleteUserNotificationDetails(fid)
       }
+
+      break
     case 'frame_removed':
       await deleteUserNotificationDetails(fid)
 
