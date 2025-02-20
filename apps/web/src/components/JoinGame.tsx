@@ -157,7 +157,13 @@ export function JoinGame({ game, previousGame, refetch }: Props) {
             {simulation.error && (
               <Alert variant="destructive" className="mt-4">
                 <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{simulation.error.message}</AlertDescription>
+                <AlertDescription>
+                  {simulation.error.message.includes(
+                    'exceeds the balance of the account'
+                  )
+                    ? 'Insufficient ETH balance'
+                    : simulation.error.message}
+                </AlertDescription>
               </Alert>
             )}
           </div>
