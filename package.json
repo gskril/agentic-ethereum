@@ -6,7 +6,7 @@
     "start:indexer": "pnpm --filter indexer start"
   },
   "engines": {
-    "node": ">=18",
+    "node": ">=22.23.4 <23",
     "pnpm": ">=9"
   },
   "devDependencies": {
